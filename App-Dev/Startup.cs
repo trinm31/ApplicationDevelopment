@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using App_Dev.DataAccess.Data;
+using App_Dev.DataAccess.Repository;
+using App_Dev.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -32,6 +34,7 @@ namespace App_Dev
                     Configuration.GetConnectionString("DefaultConnectionTri")));
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()  
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
             services.ConfigureApplicationCookie(options =>
