@@ -22,7 +22,6 @@ namespace App_Dev.DataAccess.Repository
                 objFromDb.Name = traineeProfile.Name;
                 objFromDb.DateOfBirth = traineeProfile.DateOfBirth;
                 objFromDb.Education = traineeProfile.Education;
-                objFromDb.Age = traineeProfile.Age;
                 objFromDb.Department = traineeProfile.Department;
                 objFromDb.Location = traineeProfile.Location;
                 objFromDb.ToeicScore = traineeProfile.ToeicScore;

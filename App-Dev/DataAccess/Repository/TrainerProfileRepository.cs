@@ -26,7 +26,6 @@ namespace App_Dev.DataAccess.Repository
                 objFromDb.TypeOfTrainer = trainerProfile.TypeOfTrainer;
                 objFromDb.Email = trainerProfile.Email;
                 objFromDb.Education = trainerProfile.Education;
-                objFromDb.Age = trainerProfile.Age;
             }
         }
     }
