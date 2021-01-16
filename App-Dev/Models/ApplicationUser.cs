@@ -7,12 +7,8 @@ namespace App_Dev.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        [Required] 
-        public string Education { get; set; }
-        [Required] 
-        public int Age { get; set; }
         [Required]
-        public DateTime DateOfBirth { get; set; }
+        public string Name { get; set; }
         [Required]
         public int TrainerProfileId { get; set; }
         [ForeignKey("TrainerProfileId")]
@@ -21,5 +17,7 @@ namespace App_Dev.Models
         public int TraineeProfileId { get; set; }
         [ForeignKey("TraineeProfileId")]
         public TraineeProfile TraineeProfile { get; set; }
+        [NotMapped] 
+        public string Role { get; set; }
     }
 }

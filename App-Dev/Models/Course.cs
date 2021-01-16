@@ -7,7 +7,7 @@ namespace App_Dev.Models
     {
         [Key] 
         public int Id { get; set; }
-        [Display(Name = "Category Name")]
+        [Display(Name = "Course Name")]
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
