@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace App_Dev.Migrations
+namespace App_Dev.DataAccess.Migrations
 {
     public partial class CreateDb : Migration
     {

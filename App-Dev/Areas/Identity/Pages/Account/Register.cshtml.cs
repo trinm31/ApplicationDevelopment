@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using App_Dev.DataAccess.Repository.IRepository;
+using App_Dev.Models;
+using App_Dev.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
 namespace App_Dev.Areas.Identity.Pages.Account
@@ -23,17 +24,24 @@ namespace App_Dev.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager,
+            IUnitOfWork unitOfWork
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
+            _unitOfWork = unitOfWork;
         }
 
         [BindProperty]
@@ -60,11 +68,40 @@ namespace App_Dev.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+            [Required]
+            public string Name { get; set; }
+            [Required]
+            public string PhoneNumber { get; set; }
+            [Required] 
+            public string Education { get; set; }
+            [Required]
+            public DateTime DateOfBirth { get; set; }
+            public string Role { get; set; }
+            public IEnumerable<SelectListItem> RoleList { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
+            Input = new InputModel()
+            {
+                RoleList = _roleManager.Roles.Where(u=> u.Name != SD.Role_Trainee).Select(x=> x.Name).Select(i=> new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                })
+            };
+            if (User.IsInRole(SD.Role_Staff))
+            {
+                Input = new InputModel()
+                {
+                    RoleList = _roleManager.Roles.Where(u=> u.Name == SD.Role_Trainee).Select(x=> x.Name).Select(i=> new SelectListItem
+                    {
+                        Text = i,
+                        Value = i
+                    })
+                };
+            }
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -74,22 +111,50 @@ namespace App_Dev.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser()
+                {
+                    UserName = Input.Email, 
+                    Email = Input.Email,
+                    PhoneNumber = Input.PhoneNumber,
+                    Education = Input.Education,
+                    Role = Input.Role,
+                    Name = Input.Name,
+                    DateOfBirth = Input.DateOfBirth
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
+                    if (!await _roleManager.RoleExistsAsync(SD.Role_Admin))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin));
+                    }
+                    if (!await _roleManager.RoleExistsAsync(SD.Role_Staff))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.Role_Staff));
+                    }
+                    if (!await _roleManager.RoleExistsAsync(SD.Role_Trainee))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.Role_Trainee));
+                    }
+                    if (!await _roleManager.RoleExistsAsync(SD.Role_Trainer))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(SD.Role_Trainer));
+                    }
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _userManager.AddToRoleAsync(user, user.Role);
+
+                    // var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    // var callbackUrl = Url.Page(
+                    //     "/Account/ConfirmEmail",
+                    //     pageHandler: null,
+                    //     values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                    //     protocol: Request.Scheme);
+                    //
+                    // await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -97,14 +162,34 @@ namespace App_Dev.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
+                        //return LocalRedirect(returnUrl);
+                        return RedirectToAction("Index", "User", new {Area = "Admin"});
                     }
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+            }
+            Input = new InputModel()
+            {
+                RoleList = _roleManager.Roles.Where(u=> u.Name != SD.Role_Trainee).Select(x=> x.Name).Select(i=> new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                })
+            };
+            if (User.IsInRole(SD.Role_Staff))
+            {
+                Input = new InputModel()
+                {
+                    RoleList = _roleManager.Roles.Where(u=> u.Name == SD.Role_Trainee).Select(x=> x.Name).Select(i=> new SelectListItem
+                    {
+                        Text = i,
+                        Value = i
+                    })
+                };
             }
 
             // If we got this far, something failed, redisplay form

@@ -11,11 +11,9 @@ namespace App_Dev.Models
         public string Name { get; set; }
         [Required] 
         public string Education { get; set; }
-        [Required] 
-        public int Age { get; set; }
         [Required]
         public DateTime DateOfBirth { get; set; }
-        [NotMapped] 
+        [NotMapped]
         public string Role { get; set; }
     }
 }
