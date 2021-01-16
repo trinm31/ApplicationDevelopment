@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace App_Dev.DataAccess.Migrations
+namespace App_Dev.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -120,51 +120,6 @@ namespace App_Dev.DataAccess.Migrations
                     b.HasIndex("TraineeId");
 
                     b.ToTable("Enrolls");
-                });
-
-            modelBuilder.Entity("App_Dev.Models.TraineeProfile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Department")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ExperimentDetail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MainProgrammingLanguage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ToeicScore")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TraineeProfiles");
-                });
-
-            modelBuilder.Entity("App_Dev.Models.TrainerProfile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("TypeOfTrainer")
-                        .HasColumnType("int");
-
-                    b.Property<string>("WorkingPlace")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TrainerProfiles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -383,17 +338,50 @@ namespace App_Dev.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TraineeProfileId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TrainerProfileId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("TraineeProfileId");
-
-                    b.HasIndex("TrainerProfileId");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
+            modelBuilder.Entity("App_Dev.Models.TraineeProfile", b =>
+                {
+                    b.HasBaseType("App_Dev.Models.ApplicationUser");
+
+                    b.Property<int>("Department")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExperimentDetail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MainProgrammingLanguage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ToeicScore")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("TraineeProfile");
+                });
+
+            modelBuilder.Entity("App_Dev.Models.TrainerProfile", b =>
+                {
+                    b.HasBaseType("App_Dev.Models.ApplicationUser");
+
+                    b.Property<int>("TypeOfTrainer")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WorkingPlace")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("TrainerProfile");
                 });
 
             modelBuilder.Entity("App_Dev.Models.Course", b =>
@@ -478,21 +466,6 @@ namespace App_Dev.DataAccess.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("App_Dev.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("App_Dev.Models.TraineeProfile", "TraineeProfile")
-                        .WithMany()
-                        .HasForeignKey("TraineeProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("App_Dev.Models.TrainerProfile", "TrainerProfile")
-                        .WithMany()
-                        .HasForeignKey("TrainerProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

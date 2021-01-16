@@ -1,21 +1,12 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using App_Dev.Utility.Enum;
 
 namespace App_Dev.Models
 {
-    public class TraineeProfile
+    public class TraineeProfile: ApplicationUser
     {
-        [Key] 
-        public int Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        [Required] 
-        public string Education { get; set; }
-        [Required] 
-        public int Age { get; set; }
-        [Required]
-        public DateTime DateOfBirth { get; set; }
         [Required] 
         public string MainProgrammingLanguage { get; set; }
         [Required] 

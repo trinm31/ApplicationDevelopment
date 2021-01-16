@@ -9,14 +9,12 @@ namespace App_Dev.Models
     {
         [Required]
         public string Name { get; set; }
+        [Required] 
+        public string Education { get; set; }
+        [Required] 
+        public int Age { get; set; }
         [Required]
-        public int TrainerProfileId { get; set; }
-        [ForeignKey("TrainerProfileId")]
-        public TrainerProfile TrainerProfile { get; set; }
-        [Required]
-        public int TraineeProfileId { get; set; }
-        [ForeignKey("TraineeProfileId")]
-        public TraineeProfile TraineeProfile { get; set; }
+        public DateTime DateOfBirth { get; set; }
         [NotMapped] 
         public string Role { get; set; }
     }
