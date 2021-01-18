@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using App_Dev.DataAccess.Data;
 using App_Dev.DataAccess.Repository.IRepository;
 using App_Dev.Models;
@@ -10,6 +11,11 @@ namespace App_Dev.DataAccess.Repository
         public ApplicationUserRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
+        }
+
+        public async Task Update(ApplicationUser applicationUser)
+        {
+            _db.Update(applicationUser);
         }
     }
 }
