@@ -23,6 +23,10 @@ namespace App_Dev.DataAccess.Repository
         {
             return await dbSet.FindAsync(id);
         }
+        public async Task<T> GetAsync(string id)
+        {
+            return await dbSet.FindAsync(id);
+        }
 
         public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
         {

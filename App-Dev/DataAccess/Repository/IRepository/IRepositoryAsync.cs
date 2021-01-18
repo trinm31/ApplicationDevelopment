@@ -9,6 +9,7 @@ namespace App_Dev.DataAccess.Repository.IRepository
     public interface IRepositoryAsync<T> where T :class
     {
         Task<T> GetAsync(int id);
+        Task<T> GetAsync(string id);
         Task<IEnumerable<T>> GetAllAsync(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
