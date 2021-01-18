@@ -5,11 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using App_Dev.Models;
+using App_Dev.Models.ViewModels;
 
 namespace App_Dev.Controllers
 {
-    [Area("Customer")]
+    [Area("Unauthenticated")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
