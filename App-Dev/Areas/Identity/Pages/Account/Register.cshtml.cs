@@ -111,39 +111,69 @@ namespace App_Dev.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser()
+                ApplicationUser applicationUser = new ApplicationUser();
+                TraineeProfile traineeProfile = new TraineeProfile();
+                TrainerProfile trainerProfile = new TrainerProfile();
+                IdentityResult result = new IdentityResult();
+                if (Input.Role == SD.Role_Trainee)
                 {
-                    UserName = Input.Email, 
-                    Email = Input.Email,
-                    PhoneNumber = Input.PhoneNumber,
-                    Education = Input.Education,
-                    Role = Input.Role,
-                    Name = Input.Name,
-                    DateOfBirth = Input.DateOfBirth
-                };
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                    traineeProfile = new TraineeProfile()
+                    {
+                        UserName = Input.Email, 
+                        Email = Input.Email,
+                        PhoneNumber = Input.PhoneNumber,
+                        Education = Input.Education,
+                        Role = Input.Role,
+                        Name = Input.Name,
+                        DateOfBirth = Input.DateOfBirth
+                    };
+                    result = await _userManager.CreateAsync(traineeProfile, Input.Password);
+                    
+                }else if (Input.Role == SD.Role_Trainer)
+                {
+                    trainerProfile = new TrainerProfile()
+                    {
+                        UserName = Input.Email, 
+                        Email = Input.Email,
+                        PhoneNumber = Input.PhoneNumber,
+                        Education = Input.Education,
+                        Role = Input.Role,
+                        Name = Input.Name,
+                        DateOfBirth = Input.DateOfBirth
+                    };
+                    result = await _userManager.CreateAsync(trainerProfile, Input.Password);
+                }
+                else
+                {
+                    applicationUser = new ApplicationUser()
+                    {
+                        UserName = Input.Email, 
+                        Email = Input.Email,
+                        PhoneNumber = Input.PhoneNumber,
+                        Education = Input.Education,
+                        Role = Input.Role,
+                        Name = Input.Name,
+                        DateOfBirth = Input.DateOfBirth
+                    };
+                    result = await _userManager.CreateAsync(applicationUser, Input.Password);
+                }
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (!await _roleManager.RoleExistsAsync(SD.Role_Admin))
+                    if (Input.Role == SD.Role_Trainee)
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin));
-                    }
-                    if (!await _roleManager.RoleExistsAsync(SD.Role_Staff))
+                        await _userManager.AddToRoleAsync(traineeProfile, traineeProfile.Role);
+                    }else if (Input.Role == SD.Role_Trainer)
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.Role_Staff));
+                        await _userManager.AddToRoleAsync(trainerProfile, trainerProfile.Role);
                     }
-                    if (!await _roleManager.RoleExistsAsync(SD.Role_Trainee))
+                    else
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.Role_Trainee));
+                        await _userManager.AddToRoleAsync(applicationUser, applicationUser.Role);
                     }
-                    if (!await _roleManager.RoleExistsAsync(SD.Role_Trainer))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(SD.Role_Trainer));
-                    }
-
-                    await _userManager.AddToRoleAsync(user, user.Role);
+                    
 
                     // var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -164,7 +194,7 @@ namespace App_Dev.Areas.Identity.Pages.Account
                     {
                         //await _signInManager.SignInAsync(user, isPersistent: false);
                         //return LocalRedirect(returnUrl);
-                        return RedirectToAction("Index", "User", new {Area = "Admin"});
+                        return RedirectToAction("Index", "Users", new {Area = "Authenticated"});
                     }
                 }
                 foreach (var error in result.Errors)
