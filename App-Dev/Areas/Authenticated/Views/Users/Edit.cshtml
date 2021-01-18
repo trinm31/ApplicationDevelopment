@@ -1,0 +1,231 @@
+@using App_Dev.Utility.Enum
+@model App_Dev.Models.ViewModels.UsersVM
+@using App_Dev.Utility
+
+@{
+    var title = "Edit User Profile";
+    Layout = "_Layout";
+}
+
+@if (@Model.TrainerProfile != null)
+{
+    <form method="post">
+        <div class="row p-3 border">
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <partial name="_StatusMessage" model="@ViewData["Message"]" />
+                <input type="hidden" asp-for="TrainerProfile.Id" />
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="TrainerProfile.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="TrainerProfile.Name" class="form-control">
+                        <span asp-validation-for="TrainerProfile.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="TrainerProfile.Email"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="TrainerProfile.Email" class="form-control">
+                        <span asp-validation-for="TrainerProfile.Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="TrainerProfile.WorkingPlace"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="TrainerProfile.WorkingPlace" class="form-control">
+                        <span asp-validation-for="TrainerProfile.WorkingPlace" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        Type
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="TrainerProfile.TypeOfTrainer" asp-items="Html.GetEnumSelectList<TypeOfTrainer>()">
+                            <option selected="selected" value="">Please select</option>
+                        </select>
+                        <span asp-validation-for="TrainerProfile.TypeOfTrainer" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Update</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+@if (@Model.TraineeProfile != null)
+{
+    <form method="post">
+     <div class="row p-3 border">
+         <div class="col-12 border-bottom">
+             <h2 class="text-primary">@title</h2>
+         </div>
+         <div class="col-8 pt-4">
+             <input type="hidden" asp-for="TraineeProfile.Id" />
+             <partial name="_StatusMessage" model="@ViewData["Message"]"/>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.Name"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.Name" class="form-control">
+                     <span asp-validation-for="TraineeProfile.Name" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.Email"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.Email" class="form-control">
+                     <span asp-validation-for="TraineeProfile.Email" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.DateOfBirth"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.DateOfBirth" class="form-control">
+                     <span asp-validation-for="TraineeProfile.DateOfBirth" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.Education"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.Education" class="form-control">
+                     <span asp-validation-for="TraineeProfile.Education" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.MainProgrammingLanguage"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.MainProgrammingLanguage" class="form-control">
+                     <span asp-validation-for="TraineeProfile.MainProgrammingLanguage" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.ToeicScore"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.ToeicScore" class="form-control">
+                     <span asp-validation-for="TraineeProfile.ToeicScore" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.ExperimentDetail"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.ExperimentDetail" class="form-control">
+                     <span asp-validation-for="TraineeProfile.ExperimentDetail" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.Location"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.Location" class="form-control">
+                     <span asp-validation-for="TraineeProfile.Location" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     Department
+                 </div>
+                 <div class="col-8">
+                     <select asp-for="TraineeProfile.Department" asp-items="Html.GetEnumSelectList<Department>()">
+                         <option selected="selected" value="">Please select</option>
+                     </select>
+                     <span asp-validation-for="TrainerProfile.TypeOfTrainer" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-8 offset-4">
+                     <div class="row">
+                         <div class="col">
+                             <button type="submit" class="btn btn-primary form-control">Update</button>
+                         </div>
+                         <div class="col">
+                             <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         </div>
+     </form>
+}
+@if (@Model.ApplicationUser != null)
+{
+    <form method="post">
+        <div class="row p-3 border">
+            <div class="col-12 border-bottom">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8 pt-4">
+                <input type="hidden" asp-for="ApplicationUser.Id"/>
+                <partial name="_StatusMessage" model="@ViewData["Message"]"/>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="ApplicationUser.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="ApplicationUser.Name" class="form-control">
+                        <span asp-validation-for="ApplicationUser.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="ApplicationUser.Email"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="ApplicationUser.Email" class="form-control">
+                        <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-8 offset-4">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary form-control">Update</button>
+                            </div>
+                            <div class="col">
+                                <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}
