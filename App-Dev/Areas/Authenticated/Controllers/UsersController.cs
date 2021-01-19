@@ -10,6 +10,7 @@ using App_Dev.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace App_Dev.Areas.Authenticated.Controllers
 {
@@ -34,6 +35,78 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             return View();
         }
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> ForgotPassword(string id)
+        {
+            var user = await _unitOfWork.ApplicationUser.GetAsync(id);
+
+            if (user == null)
+            {
+                return View();
+            }
+
+            ForgotPasswordVM UserEmail = new ForgotPasswordVM()
+            {
+                Email = user.Email
+            };
+            return View(UserEmail);
+        }
+        [Authorize(Roles = SD.Role_Admin)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    return RedirectToAction("ResetPassword", "Users", new {email = model.Email, token = token});
+                }
+
+                return View("ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            if (token == null || email == null)
+            {
+                ModelState.AddModelError("","Invalid password reset token");
+            }
+
+            return View();
+        }
+        [Authorize(Roles = SD.Role_Admin)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user,model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return View("ResetPasswordConfirmation");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("",error.Description);
+                    }
+
+                    return View(model);
+                }
+            }
+            return View(model);
+        }
+
         public async Task<IActionResult> Edit(string id)
         {
             var user = await _unitOfWork.ApplicationUser.GetAsync(id);

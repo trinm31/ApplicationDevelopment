@@ -47,7 +47,7 @@ function loadDataTable(){
                             </div>
                         `;
                     }
-                },"width":"25%"
+                },"width":"35%"
             }
         ],
         "language":{
