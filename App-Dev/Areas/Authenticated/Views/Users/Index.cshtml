@@ -34,7 +34,7 @@
         <script src="~/js/UsersAdmin.js"></script>
     }
 }
-else
+@if (User.IsInRole(SD.Role_Staff))
 {
     @section Scripts{
         <script src="~/js/UsersStaff.js"></script>

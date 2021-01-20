@@ -15,7 +15,7 @@ namespace App_Dev.Models
         [Required]
         public string TrainerId { get; set; }
         [ForeignKey("TrainerId")]
-        public ApplicationUser ApplicationUser { get; set; }
+        public TrainerProfile TrainerProfile { get; set; }
         public DateTime Time { get; set; }
     }
 }

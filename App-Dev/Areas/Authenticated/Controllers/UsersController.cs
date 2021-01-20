@@ -194,6 +194,10 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 userFromDb.Department = user.TraineeProfile.Department;
                 await _unitOfWork.TraineeProfile.Update(userFromDb);
                 _unitOfWork.Save();
+                if (User.IsInRole(SD.Role_Staff))
+                {
+                    return RedirectToAction(nameof(TraineeManager));
+                }
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -217,6 +221,10 @@ namespace App_Dev.Areas.Authenticated.Controllers
 
                 await _unitOfWork.TrainerProfile.Update(userFromDb);
                 _unitOfWork.Save();
+                if (User.IsInRole(SD.Role_Staff))
+                {
+                    return RedirectToAction(nameof(TrainerManager));
+                }
                 return RedirectToAction(nameof(Index));
             }
                
