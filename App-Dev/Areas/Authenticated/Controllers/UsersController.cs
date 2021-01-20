@@ -35,6 +35,14 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             return View();
         }
+        public IActionResult TraineeManager()
+        {
+            return View();
+        }
+        public IActionResult TrainerManager()
+        {
+            return View();
+        }
         [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> ForgotPassword(string id)
         {
@@ -231,8 +239,9 @@ namespace App_Dev.Areas.Authenticated.Controllers
                     var roleTemp = await _userManager.GetRolesAsync(usertemp);
                     user.Role = roleTemp.FirstOrDefault();
                 }
-                
-                return Json(new {data = userList});
+
+                var userListTemp = userList.Where(u => u.Role != SD.Role_Trainee); 
+                return Json(new {data = userListTemp});
             }
             var traineeUserTemp = await _unitOfWork.ApplicationUser.GetAllAsync();
             foreach (var user in traineeUserTemp)
@@ -244,6 +253,40 @@ namespace App_Dev.Areas.Authenticated.Controllers
 
             var traineeUser = traineeUserTemp.Where(u => u.Role == SD.Role_Trainee || u.Role == SD.Role_Trainer);
             return Json(new {data = traineeUser});
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrainer()
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u=> u.Id != claims.Value);
+
+            foreach (var user in userList)
+            {
+                var usertemp = await _userManager.FindByIdAsync(user.Id);
+                var roleTemp = await _userManager.GetRolesAsync(usertemp);
+                user.Role = roleTemp.FirstOrDefault();
+            }
+
+            var userListTemp = userList.Where(u => u.Role == SD.Role_Trainer); 
+            return Json(new {data = userListTemp});
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrainee()
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u=> u.Id != claims.Value);
+
+            foreach (var user in userList)
+            {
+                var usertemp = await _userManager.FindByIdAsync(user.Id);
+                var roleTemp = await _userManager.GetRolesAsync(usertemp);
+                user.Role = roleTemp.FirstOrDefault();
+            }
+
+            var userListTemp = userList.Where(u => u.Role == SD.Role_Trainee); 
+            return Json(new {data = userListTemp});
         }
         [HttpPost]
         public async Task<IActionResult> LockUnlock([FromBody] string id)
