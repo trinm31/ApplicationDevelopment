@@ -20,7 +20,7 @@ using Microsoft.Extensions.Logging;
 
 namespace App_Dev.Areas.Identity.Pages.Account
 {
-    [AllowAnonymous]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Staff)]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -209,10 +209,6 @@ namespace App_Dev.Areas.Identity.Pages.Account
                         await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                             $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                     }
-                    
-
-                    
-
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
@@ -221,6 +217,10 @@ namespace App_Dev.Areas.Identity.Pages.Account
                     {
                         //await _signInManager.SignInAsync(user, isPersistent: false);
                         //return LocalRedirect(returnUrl);
+                        if (User.IsInRole(SD.Role_Staff))
+                        {
+                            return RedirectToAction("TraineeManager", "Users", new {Area = "Authenticated"});
+                        }
                         return RedirectToAction("Index", "Users", new {Area = "Authenticated"});
                     }
                 }
@@ -248,7 +248,6 @@ namespace App_Dev.Areas.Identity.Pages.Account
                     })
                 };
             }
-
             // If we got this far, something failed, redisplay form
             return Page();
         }
