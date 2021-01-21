@@ -10,6 +10,7 @@ using App_Dev.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace App_Dev.Areas.Authenticated.Controllers
 {
@@ -34,6 +35,86 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             return View();
         }
+        public IActionResult TraineeManager()
+        {
+            return View();
+        }
+        public IActionResult TrainerManager()
+        {
+            return View();
+        }
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> ForgotPassword(string id)
+        {
+            var user = await _unitOfWork.ApplicationUser.GetAsync(id);
+
+            if (user == null)
+            {
+                return View();
+            }
+
+            ForgotPasswordVM UserEmail = new ForgotPasswordVM()
+            {
+                Email = user.Email
+            };
+            return View(UserEmail);
+        }
+        [Authorize(Roles = SD.Role_Admin)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    return RedirectToAction("ResetPassword", "Users", new {email = model.Email, token = token});
+                }
+
+                return View("ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> ResetPassword(string token, string email)
+        {
+            if (token == null || email == null)
+            {
+                ModelState.AddModelError("","Invalid password reset token");
+            }
+
+            return View();
+        }
+        [Authorize(Roles = SD.Role_Admin)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user,model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return View("ResetPasswordConfirmation");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("",error.Description);
+                    }
+
+                    return View(model);
+                }
+            }
+            return View(model);
+        }
+
         public async Task<IActionResult> Edit(string id)
         {
             var user = await _unitOfWork.ApplicationUser.GetAsync(id);
@@ -113,6 +194,10 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 userFromDb.Department = user.TraineeProfile.Department;
                 await _unitOfWork.TraineeProfile.Update(userFromDb);
                 _unitOfWork.Save();
+                if (User.IsInRole(SD.Role_Staff))
+                {
+                    return RedirectToAction(nameof(TraineeManager));
+                }
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -136,6 +221,10 @@ namespace App_Dev.Areas.Authenticated.Controllers
 
                 await _unitOfWork.TrainerProfile.Update(userFromDb);
                 _unitOfWork.Save();
+                if (User.IsInRole(SD.Role_Staff))
+                {
+                    return RedirectToAction(nameof(TrainerManager));
+                }
                 return RedirectToAction(nameof(Index));
             }
                
@@ -158,8 +247,9 @@ namespace App_Dev.Areas.Authenticated.Controllers
                     var roleTemp = await _userManager.GetRolesAsync(usertemp);
                     user.Role = roleTemp.FirstOrDefault();
                 }
-                
-                return Json(new {data = userList});
+
+                var userListTemp = userList.Where(u => u.Role != SD.Role_Trainee); 
+                return Json(new {data = userListTemp});
             }
             var traineeUserTemp = await _unitOfWork.ApplicationUser.GetAllAsync();
             foreach (var user in traineeUserTemp)
@@ -171,6 +261,40 @@ namespace App_Dev.Areas.Authenticated.Controllers
 
             var traineeUser = traineeUserTemp.Where(u => u.Role == SD.Role_Trainee || u.Role == SD.Role_Trainer);
             return Json(new {data = traineeUser});
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrainer()
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u=> u.Id != claims.Value);
+
+            foreach (var user in userList)
+            {
+                var usertemp = await _userManager.FindByIdAsync(user.Id);
+                var roleTemp = await _userManager.GetRolesAsync(usertemp);
+                user.Role = roleTemp.FirstOrDefault();
+            }
+
+            var userListTemp = userList.Where(u => u.Role == SD.Role_Trainer); 
+            return Json(new {data = userListTemp});
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrainee()
+        {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u=> u.Id != claims.Value);
+
+            foreach (var user in userList)
+            {
+                var usertemp = await _userManager.FindByIdAsync(user.Id);
+                var roleTemp = await _userManager.GetRolesAsync(usertemp);
+                user.Role = roleTemp.FirstOrDefault();
+            }
+
+            var userListTemp = userList.Where(u => u.Role == SD.Role_Trainee); 
+            return Json(new {data = userListTemp});
         }
         [HttpPost]
         public async Task<IActionResult> LockUnlock([FromBody] string id)

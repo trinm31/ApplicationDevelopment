@@ -7,7 +7,7 @@ $(document).ready(function () {
 function loadDataTable(){
     dataTable = $('#tblData').DataTable({
         "ajax":{
-            "url": "/Authenticated/Users/GetAll"
+            "url": "/Authenticated/Users/GetAllTrainer"
         },
         "columns":[
             {"data": "name", "width": "15%"},
@@ -26,10 +26,7 @@ function loadDataTable(){
                                 </a>
                                 <a href="/Authenticated/Users/Edit/${data.id}" class="btn btn-primary text-white" style="cursor: pointer">
                                     <i class="fas fa-edit"></i>
-                                </a>
-                                <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/Users/Delete/${data.id}") style="cursor: pointer">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
+                                </a>                    
                             </div>
                         `;
                     }
@@ -40,14 +37,11 @@ function loadDataTable(){
                                 </a>
                                 <a href="/Authenticated/Users/Edit/${data.id}" class="btn btn-primary text-white" style="cursor: pointer">
                                     <i class="fas fa-edit"></i>
-                                </a>
-                                <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/Users/Delete/${data.id}") style="cursor: pointer">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
+                                </a>                               
                             </div>
                         `;
                     }
-                },"width":"35%"
+                },"width":"25%"
             }
         ],
         "language":{
@@ -71,33 +65,6 @@ function LockUnlock(id){
             else {
                 toastr.error(data.message);
             }
-        }
-    });
-}
-
-
-function Delete(url){
-    swal({
-        title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover this imaginary file!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    }).then((willDelete) => {
-        if (willDelete){
-            $.ajax({
-                type: "DELETE",
-                url: url,
-                success: function (data){
-                    if(data.success){
-                        toastr.success(data.message);
-                        dataTable.ajax.reload();
-                    }
-                    else {
-                        toastr.error(data.message);
-                    }
-                }
-            });
         }
     });
 }
