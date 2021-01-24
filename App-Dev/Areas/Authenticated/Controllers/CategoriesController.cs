@@ -48,8 +48,8 @@ namespace App_Dev.Areas.Authenticated.Controllers
                     await _unitOfWork.CourseCategory.AddAsync(category);
                 }
                 else
-                {
-                   await _unitOfWork.CourseCategory.Update(category);
+                { 
+                    await _unitOfWork.CourseCategory.Update(category);
                 }
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
@@ -61,7 +61,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var allObj = await _unitOfWork.CourseCategory.GetAllAsync();
+            var allObj = _unitOfWork.CourseCategory.GetAllAsync();
             return Json(new {data = allObj});
         }
         [HttpDelete]
