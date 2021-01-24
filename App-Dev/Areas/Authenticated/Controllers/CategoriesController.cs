@@ -46,7 +46,6 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 if (category.Id == 0)
                 {
                     await _unitOfWork.CourseCategory.AddAsync(category);
-                    
                 }
                 else
                 {

@@ -8,6 +8,7 @@
     <div class="row p-3 border">
         @if (Model.Id != 0)
         {
+            <input type="hidden" asp-for="Id">
             title = "Edit Category";
         }
         <div class="col-12 border-bottom">
