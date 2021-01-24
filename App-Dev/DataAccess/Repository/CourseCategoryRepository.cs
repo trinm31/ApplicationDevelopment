@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App_Dev.DataAccess.Repository
 {
-    public class CourseCategoryRepository: Repository<CourseCategory>, ICourseCategoryRepository
+    public class CourseCategoryRepository: RepositoryAsync<CourseCategory>, ICourseCategoryRepository
     {
         private readonly ApplicationDbContext _db;
         public CourseCategoryRepository(ApplicationDbContext db) : base(db)
@@ -15,9 +15,9 @@ namespace App_Dev.DataAccess.Repository
             this._db = db;
         }
 
-        public void Update(CourseCategory courseCategory)
+        public async Task Update(CourseCategory courseCategory)
         {
-            var objFromDb = _db.CourseCategories.FirstOrDefault(s => s.Id == courseCategory.Id);
+            var objFromDb = await _db.CourseCategories.FirstOrDefaultAsync(s => s.Id == courseCategory.Id);
             if (objFromDb != null)
             {
                 objFromDb.Name = courseCategory.Name;

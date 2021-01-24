@@ -30,7 +30,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 return View(courseCategory);
             }
 
-            courseCategory = _unitOfWork.CourseCategory.Get(id.GetValueOrDefault());
+            courseCategory = await _unitOfWork.CourseCategory.GetAsync(id.GetValueOrDefault());
             if (courseCategory == null)
             {
                 return NotFound();
@@ -45,11 +45,11 @@ namespace App_Dev.Areas.Authenticated.Controllers
             {
                 if (category.Id == 0)
                 {
-                    _unitOfWork.CourseCategory.Add(category);
+                    await _unitOfWork.CourseCategory.AddAsync(category);
                 }
                 else
                 { 
-                    _unitOfWork.CourseCategory.Update(category);
+                    await _unitOfWork.CourseCategory.Update(category);
                 }
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
@@ -61,19 +61,19 @@ namespace App_Dev.Areas.Authenticated.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var allObj = _unitOfWork.CourseCategory.GetAll();
+            var allObj = _unitOfWork.CourseCategory.GetAllAsync();
             return Json(new {data = allObj});
         }
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var objFromDb = _unitOfWork.CourseCategory.Get(id);
+            var objFromDb = await _unitOfWork.CourseCategory.GetAsync(id);
             if (objFromDb == null)
             {
                 return Json(new {success = false, message = "Error while Deleting"});
             }
 
-            _unitOfWork.CourseCategory.Remove(objFromDb);
+            await _unitOfWork.CourseCategory.RemoveAsync(objFromDb);
             _unitOfWork.Save();
             return Json(new {success = true, message = "Delete successful"});
         }
