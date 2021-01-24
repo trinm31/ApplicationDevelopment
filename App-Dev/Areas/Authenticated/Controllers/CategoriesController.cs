@@ -61,7 +61,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var allObj = _unitOfWork.CourseCategory.GetAllAsync();
+            var allObj = await _unitOfWork.CourseCategory.GetAllAsync();
             return Json(new {data = allObj});
         }
         [HttpDelete]
