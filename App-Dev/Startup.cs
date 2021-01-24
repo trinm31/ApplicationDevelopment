@@ -35,7 +35,7 @@ namespace App_Dev
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("ApplicationDbContextConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()  
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSingleton<IEmailSender, EmailSender>();
