@@ -15,7 +15,7 @@ namespace App_Dev.Models
         [Required] 
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
-        public CourseCategory Category { get; set; }
+        public CourseCategory CourseCategory { get; set; }
         
     }
 }
