@@ -3,8 +3,8 @@ using App_Dev.Models;
 
 namespace App_Dev.DataAccess.Repository.IRepository
 {
-    public interface ICourseCategoryRepository: IRepositoryAsync<CourseCategory>
+    public interface ICourseCategoryRepository: IRepository<CourseCategory>
     {
-        Task Update(CourseCategory courseCategory);
+        void Update(CourseCategory courseCategory);
     }
 }
