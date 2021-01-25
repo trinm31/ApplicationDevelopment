@@ -9,7 +9,7 @@ namespace App_Dev.Models
         [Key] 
         public int Id { get; set; }
         [Required]
-        public int CourId { get; set; }
+        public int CourseId { get; set; }
         [ForeignKey("CourseId")]
         public Course Course { get; set; }
         [Required]
