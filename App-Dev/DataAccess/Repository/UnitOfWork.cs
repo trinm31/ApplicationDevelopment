@@ -33,7 +33,7 @@ namespace App_Dev.DataAccess.Repository
 
         public void Save()
         {
-            _db.SaveChangesAsync();
+            _db.SaveChanges();
         }
     }
 }
