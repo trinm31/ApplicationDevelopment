@@ -29,17 +29,9 @@ namespace App_Dev.Areas.Authenticated.Controllers
             return View();
         }
         // GET
-        public async Task<IActionResult> Enroll(int id)
+        public async Task<IActionResult> Enroll()
         {
-            var course = await _unitOfWork.Course.GetAsync(id);
-            var traneeList = await _unitOfWork.TraineeProfile.GetAllAsync();
-            EnrollVM enrollVm = new EnrollVM()
-            {
-                Course = course,
-                TraineeList = traneeList
-                
-            };
-            return View(enrollVm);
+            return View();
         }
         
         #region Api Calls
@@ -57,7 +49,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
             return Json(new {data = allObj});
         }
         [HttpPost]
-        public async Task<IActionResult> Enroll( int id, [FromBody] string traineeid)
+        public async Task<IActionResult> Enroll(int id, [FromBody] string traineeid)
         {
             var claimsIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -73,18 +65,42 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 }
                 if (traineeid == null)
                 {
-                    return Json(new { success = false, message = "traineeid null" });
+                    return Json(new { success = false, message = "Traineeid null" });
                 }
-                Enroll enroll = new Enroll()
-                {
-                    CourseId = id,
-                    TraineeId = traineeid
-                };
-                await _unitOfWork.Enroll.AddAsync(enroll);
+
+                var isExist = await _unitOfWork.Enroll.GetAllAsync(u => u.CourseId == id && u.TraineeId == traineeid);
                 
+                if (isExist.Count() == 0)
+                {
+                    Enroll enroll = new Enroll()
+                    {
+                        CourseId = id,
+                        TraineeId = traineeid,
+                        Time = DateTime.Now
+                    };
+                    await _unitOfWork.Enroll.AddAsync(enroll);
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Already enroll" });
+                }
             }
             _unitOfWork.Save();
             return Json(new { success = true, message = "Operation Successful." });
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, [FromBody] string traineeid)
+        {
+            var objFromDb = await _unitOfWork.Enroll.GetFirstOrDefaultAsync(u => u.CourseId == id && u.TraineeId == traineeid);
+            if (objFromDb == null)
+            {
+                return Json(new {success = false, message = "Error while Deleting"});
+            }
+
+            await _unitOfWork.Enroll.RemoveAsync(objFromDb);
+            _unitOfWork.Save();
+            return Json(new {success = true, message = "Delete successful"});
         }
         #endregion
     }

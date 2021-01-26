@@ -1,4 +1,4 @@
-﻿var dataTable;
+var dataTable;
 
 $(document).ready(function () {
     loadDataTable();
@@ -7,7 +7,7 @@ $(document).ready(function () {
 function loadDataTable(){
     dataTable = $('#tblData').DataTable({
         "ajax":{
-            "url": "/Authenticated/Enroll/GetTrainee"
+            "url": "/Authenticated/AssignToTrainer/GetTrainer"
         },
         "columns":[
             {"data": "name", "width": "30%"},
@@ -16,8 +16,8 @@ function loadDataTable(){
                 "data": "id",
                 "render": function (data){
                     return `<div class="text-center">
-                                <a onclick=Enroll("${data}") class="btn btn-success text-white"  style="cursor: pointer">
-                                    <i class="fas fa-plus"></i> Enroll
+                                <a onclick=Assign("${data}") class="btn btn-success text-white"  style="cursor: pointer">
+                                    <i class="fas fa-plus"></i> Assign
                                 </a> 
                                 <a onclick=Delete("${data}") class="btn btn-danger text-white"  style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i> Delete
@@ -34,7 +34,7 @@ function loadDataTable(){
     });
 }
 
-function Enroll(id){
+function Assign(id){
     $.ajax({
         type: "POST",
         url: window.location.href + '/',
@@ -44,7 +44,7 @@ function Enroll(id){
             if(data.success){
                 toastr.success(data.message);
                 dataTable.ajax.reload();
-                
+
             }
             else {
                 toastr.error(data.message);
@@ -67,7 +67,7 @@ function Delete(id){
         if (willDelete){
             $.ajax({
                 type: "POST",
-                url: "/Authenticated/Enroll/Delete/" + idUrl,
+                url: "/Authenticated/AssignToTrainer/Delete/" + idUrl,
                 data: JSON.stringify(id),
                 contentType: "application/json",
                 success: function (data){
