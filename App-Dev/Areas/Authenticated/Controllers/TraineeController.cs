@@ -41,5 +41,24 @@ namespace App_Dev.Areas.Authenticated.Controllers
             }
             return View(courses);
         }
+        public async Task<IActionResult> AvailableCourse()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var objFromdb = await _unitOfWork.Enroll.GetAllAsync(u => u.TraineeId == claims.Value);
+            List<Course> availablecourse = new List<Course>();
+            var allcourse = await _unitOfWork.Course.GetAllAsync(includeProperties:"CourseCategory");
+            foreach (var course in allcourse)
+            {
+                foreach (var obj in objFromdb)
+                {
+                    if (course.Id != obj.Id)
+                    {
+                        availablecourse.Add(course);
+                    }
+                }
+            }
+            return View(availablecourse);
+        }
     }
 }
