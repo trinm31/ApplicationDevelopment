@@ -41,10 +41,5 @@ namespace App_Dev.Areas.Authenticated.Controllers
             }
             return View(courses);
         }
-        public IActionResult Detail()
-        {
-
-            return View();
-        }
     }
 }

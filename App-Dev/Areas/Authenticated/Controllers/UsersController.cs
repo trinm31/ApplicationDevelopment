@@ -176,13 +176,14 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 var isUserExists = userDb.Count() > 0 ? true : false;
                 var userEmailDb = await _unitOfWork.TraineeProfile.GetAllAsync(u => u.Email == user.TraineeProfile.Email);
                 var isEmailExists = userEmailDb.Count() > 0 ? true : false;
+                var userFromDb = await _unitOfWork.TraineeProfile.GetAsync(user.TraineeProfile.Id);
                 if (!isEmailExists && !isUserExists)
                 {
                     ViewData["Message"] = "Error: User with this email already exists";
                     return View(usersVm);
                 }
         
-                var userFromDb = await _unitOfWork.TraineeProfile.GetAsync(user.TraineeProfile.Id);
+                
                 userFromDb.Name= user.TraineeProfile.Name;
                 userFromDb.Email = user.TraineeProfile.Email;
                 userFromDb.DateOfBirth = user.TraineeProfile.DateOfBirth;
@@ -207,13 +208,14 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 var isUserExists = userDb.Count() > 0 ? true : false;
                 var userEmailDb = await _unitOfWork.TrainerProfile.GetAllAsync(u => u.Email == user.TrainerProfile.Email);
                 var isEmailExists = userEmailDb.Count() > 0 ? true : false;
+                var userFromDb = await _unitOfWork.TrainerProfile.GetAsync(user.TrainerProfile.Id);
                 if (!isEmailExists && !isUserExists)
                 {
                     ViewData["Message"] = "Error: User with this email already exists";
                     return View(usersVm);
                 }
         
-                var userFromDb = await _unitOfWork.TrainerProfile.GetAsync(user.TrainerProfile.Id);
+                
                 userFromDb.Name= user.TrainerProfile.Name;
                 userFromDb.Email = user.TrainerProfile.Email;
                 userFromDb.WorkingPlace = user.TrainerProfile.WorkingPlace;
