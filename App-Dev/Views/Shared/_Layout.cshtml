@@ -46,7 +46,8 @@
                             </div>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Management
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Management
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Categories" asp-action="Index">Categories</a>
@@ -55,7 +56,18 @@
                                 <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="AssignToTrainer" asp-action="Index">Assign Trainer</a>
                             </div>
                         </li>
-                        
+                    }
+                    @if (User.IsInRole(SD.Role_Trainer))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Trainer" asp-action="Index">Assigned Course</a>
+                        </li>
+                    }
+                    @if (User.IsInRole(SD.Role_Trainee))
+                    {
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Trainee" asp-action="Index">Enrolled Course</a>
+                    </li>
                     }
                 </ul>
                 <partial name="_LoginPartial"/>
