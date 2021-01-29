@@ -1,0 +1,22 @@
+﻿@model List<App_Dev.Models.Course>
+
+<div class="row pb-3 backgroundWhite">
+    @foreach (var course in Model)
+    {
+        <div class="col-lg-3 col-md-6">
+            <div class="row p-2">
+                <div class="col-12  p-1" style="border:1px solid #008cba; border-radius: 5px;">
+                    <div class="card" style="border:0px;">
+                        <div class="card-body">
+                            <h5 class="card-title">@course.Name</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">@course.CourseCategory.Name</h6>
+                        </div>
+                    </div>
+                    <div>
+                        <a asp-action="Overview" class="btn-primary btn form-control" asp-route-id="@course.Id">Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
