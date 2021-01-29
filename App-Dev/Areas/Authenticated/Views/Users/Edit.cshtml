@@ -1,6 +1,5 @@
 @using App_Dev.Utility.Enum
 @model App_Dev.Models.ViewModels.UsersVM
-@using App_Dev.Utility
 
 @{
     var title = "Edit User Profile";
@@ -22,7 +21,7 @@
                         <label asp-for="TrainerProfile.Email"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="TrainerProfile.Email" class="form-control" disabled>
+                        <input asp-for="TrainerProfile.Email" class="form-control" readonly="true">
                         <span asp-validation-for="TrainerProfile.Email" class="text-danger"></span>
                     </div>
                 </div>
@@ -62,22 +61,7 @@
                                 <button type="submit" class="btn btn-primary form-control">Update</button>
                             </div>
                             <div class="col">
-                                 @if (User.IsInRole(SD.Role_Admin))
-                                {
-                                    <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
-                                }
-                                @if (User.IsInRole(SD.Role_Staff))
-                                {
-                                    <a asp-action="TrainerManager" class="btn btn-primary form-control">Back To List</a>
-                                }
-                            </div>
-                            <div class="col">
-                                @if (User.IsInRole(SD.Role_Admin))
-                                {
-                                    <a href="/Authenticated/Users/ForgotPassword/@Model.TrainerProfile.Id" class="btn btn-warning text-white form-control" style="cursor: pointer">
-                                        Reset Pass
-                                    </a>
-                                }
+                                <a asp-action="TrainerManager" class="btn btn-primary form-control">Back To List</a>
                             </div>
                         </div>
                     </div>
@@ -101,7 +85,7 @@
                      <label asp-for="TraineeProfile.Email"></label>
                  </div>
                  <div class="col-8">
-                     <input asp-for="TraineeProfile.Email" class="form-control" disabled>
+                     <input asp-for="TraineeProfile.Email" class="form-control" readonly="true">
                      <span asp-validation-for="TraineeProfile.Email" class="text-danger"></span>
                  </div>
              </div>
@@ -186,22 +170,7 @@
                              <button type="submit" class="btn btn-primary form-control">Update</button>
                          </div>
                          <div class="col">
-                             @if (User.IsInRole(SD.Role_Admin))
-                            {
-                                <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
-                            }
-                            @if (User.IsInRole(SD.Role_Staff))
-                            {
-                                <a asp-action="TraineeManager" class="btn btn-primary form-control">Back To List</a>
-                            }
-                         </div>
-                         <div class="col">
-                             @if (User.IsInRole(SD.Role_Admin))
-                             {
-                                 <a href="/Authenticated/Users/ForgotPassword/@Model.TraineeProfile.Id" class="btn btn-warning text-white form-control" style="cursor: pointer">
-                                     Reset Pass
-                                 </a>
-                             }
+                             <a asp-action="TraineeManager" class="btn btn-primary form-control">Back To List</a>
                          </div>
                      </div>
                  </div>
@@ -225,7 +194,7 @@
                         <label asp-for="ApplicationUser.Email"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="ApplicationUser.Email" class="form-control" disabled>
+                        <input asp-for="ApplicationUser.Email" class="form-control" dreadonly="true">
                         <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
                     </div>
                 </div>
@@ -245,22 +214,7 @@
                                 <button type="submit" class="btn btn-primary form-control">Update</button>
                             </div>
                             <div class="col">
-                                @if (User.IsInRole(SD.Role_Admin))
-                                {
-                                    <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
-                                }
-                                @if (User.IsInRole(SD.Role_Staff))
-                                {
-                                    <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
-                                }
-                            </div>
-                            <div class="col">
-                                @if (User.IsInRole(SD.Role_Admin))
-                                {
-                                    <a href="/Authenticated/Users/ForgotPassword/@Model.ApplicationUser.Id" class="btn btn-warning text-white form-control" style="cursor: pointer">
-                                        Reset Pass
-                                    </a>  
-                                }
+                                <a asp-action="Index" class="btn btn-primary form-control">Back To List</a>
                             </div>
                         </div>
                     </div>

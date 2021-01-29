@@ -24,12 +24,12 @@ function loadDataTable(){
                                 <a class="btn btn-danger text-white" onclick=LockUnlock("${data.id}") style="cursor: pointer">
                                     <i class="fas fa-lock-open"></i> Unlock
                                 </a>
-                                <a href="/Authenticated/Users/Edit/${data.id}" class="btn btn-primary text-white" style="cursor: pointer">
-                                    <i class="fas fa-edit"></i>
-                                </a>
                                 <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/Users/Delete/${data.id}") style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
+                                <a href="/Authenticated/Users/ForgotPassword/${data.id}" class="btn btn-warning text-white " style="cursor: pointer">
+                                        Reset Pass
+                                </a> 
                             </div>
                         `;
                     }
@@ -38,16 +38,16 @@ function loadDataTable(){
                                 <a class="btn btn-success text-white" onclick=LockUnlock("${data.id}") style="cursor: pointer">
                                     <i class="fas fa-lock"></i> lock
                                 </a>
-                                <a href="/Authenticated/Users/Edit/${data.id}" class="btn btn-primary text-white" style="cursor: pointer">
-                                    <i class="fas fa-edit"></i>
-                                </a>
                                 <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/Users/Delete/${data.id}") style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
+                                <a href="/Authenticated/Users/ForgotPassword/${data.id}" class="btn btn-warning text-white" style="cursor: pointer">
+                                        Reset Pass
+                                </a>  
                             </div>
                         `;
                     }
-                },"width":"35%"
+                },"width":"45%"
             }
         ],
         "language":{

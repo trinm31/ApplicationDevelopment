@@ -65,9 +65,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Trainer" asp-action="Index">Assigned Course</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Overview" asp-action="Index">Overview</a>
-                        </li>
                     }
                     @if (User.IsInRole(SD.Role_Trainee))
                     {
@@ -76,9 +73,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Trainee" asp-action="AvailableCourse">Available Course</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Overview" asp-action="Index">Overview</a>
                         </li>
                     }
                 </ul>

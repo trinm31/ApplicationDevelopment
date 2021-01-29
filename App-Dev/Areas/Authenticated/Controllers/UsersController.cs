@@ -114,7 +114,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
             }
             return View(model);
         }
-
+        [Authorize(Roles = SD.Role_Staff)]
         public async Task<IActionResult> Edit(string id)
         {
             var user = await _unitOfWork.ApplicationUser.GetAsync(id);
@@ -146,6 +146,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = SD.Role_Staff)]
         public async Task<IActionResult> Edit(UsersVM user)
         {
             UsersVM usersVm = new UsersVM();
