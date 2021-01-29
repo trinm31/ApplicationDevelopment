@@ -76,7 +76,8 @@ namespace App_Dev.Areas.Authenticated.Controllers
                     {
                         CourseId = id,
                         TraineeId = traineeid,
-                        Time = DateTime.Now
+                        Time = DateTime.Now,
+                        EnrollStatus = SD.Approve
                     };
                     await _unitOfWork.Enroll.AddAsync(enroll);
                 }
