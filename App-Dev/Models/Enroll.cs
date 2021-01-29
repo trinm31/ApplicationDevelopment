@@ -17,5 +17,6 @@ namespace App_Dev.Models
         [ForeignKey("TraineeId")]
         public TraineeProfile TraineeProfile { get; set; }
         public DateTime Time { get; set; }
+        public string EnrollStatus { get; set; }
     }
 }
