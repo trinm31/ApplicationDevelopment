@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using App_Dev.DataAccess.Repository.IRepository;
 using App_Dev.Models;
@@ -43,13 +44,21 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (category.Id == 0)
+                var nameFromDb =
+                    await _unitOfWork.CourseCategory.GetAllAsync(c => c.Name == category.Name && c.Id != category.Id);
+                var isNameExist = nameFromDb.Count() > 0 ? true : false;
+                if (category.Id == 0 && !isNameExist )
                 {
                     await _unitOfWork.CourseCategory.AddAsync(category);
                 }
-                else
-                { 
+                else if (category.Id != 0 && !isNameExist)
+                {
                     await _unitOfWork.CourseCategory.Update(category);
+                }
+                else
+                {
+                    ViewData["Message"] = "Error: Name already exists";
+                    return View(category);
                 }
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));

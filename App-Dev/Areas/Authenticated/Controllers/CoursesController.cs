@@ -54,20 +54,38 @@ namespace App_Dev.Areas.Authenticated.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(CourseVM courseVm)
         {
+            IEnumerable<CourseCategory> CateLists = await _unitOfWork.CourseCategory.GetAllAsync();
             if (ModelState.IsValid)
             {
-                if (courseVm.Course.Id == 0)
+                var nameFromDb =
+                    await _unitOfWork.Course.GetAllAsync(c => c.Name == courseVm.Course.Name && c.Id != courseVm.Course.Id);
+                var isNameExist = nameFromDb.Count() > 0 ? true : false;
+                if (courseVm.Course.Id == 0 && !isNameExist)
                 {
                     await _unitOfWork.Course.AddAsync(courseVm.Course);
                 }
-                else
+                else if (courseVm.Course.Id != 0 && !isNameExist)
                 {
                    await _unitOfWork.Course.Update(courseVm.Course);
+                }
+                else
+                {
+                    ViewData["Message"] = "Error: Name already exists";
+                    courseVm = new CourseVM()
+                    {
+                        Course = new Course(),
+                        CategoryList = CateLists.Select(I => new SelectListItem
+                        {
+                            Text = I.Name,
+                            Value = I.Id.ToString()
+                        })
+                    };
+                    return View(courseVm);
                 }
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
-            IEnumerable<CourseCategory> CateLists = await _unitOfWork.CourseCategory.GetAllAsync();
+           
             courseVm = new CourseVM()
             {
                 Course = new Course(),
