@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 namespace App_Dev.Areas.Authenticated.Controllers
 {
     [Area("Authenticated")]
-    [Authorize(Roles = SD.Role_Staff + "," + SD.Role_Trainer + "," + SD.Role_Trainee)]
+    [Authorize(Roles = SD.Role_Staff)]
     public class OverviewController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
