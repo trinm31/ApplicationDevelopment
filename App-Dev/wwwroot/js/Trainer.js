@@ -16,10 +16,10 @@ function loadDataTable(){
                 "data": "id",
                 "render": function (data){
                     return `<div class="text-center">
-                                <a onclick=Assign("${data}") class="btn btn-success text-white"  style="cursor: pointer">
+                                <a id="btn-${data}" onclick=Assign("${data}") class="btn btn-success text-white"  style="cursor: pointer">
                                     <i class="fas fa-plus"></i> Assign
                                 </a> 
-                                <a onclick=Delete("${data}") class="btn btn-danger text-white"  style="cursor: pointer">
+                                <a id="btnDelete-${data}" onclick=Delete("${data}") class="btn btn-danger text-white"  style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i> Delete
                                 </a> 
                             </div>
@@ -42,9 +42,14 @@ function Assign(id){
         contentType: "application/json",
         success: function (data){
             if(data.success){
+                //$("#stringId a").first().removeClass("btn btn-success text-white").addClass("btn btn-success text-white d-lg-none");
                 toastr.success(data.message);
-                dataTable.ajax.reload();
-
+                // dataTable.rows()
+                //     .invalidate()
+                //     .draw();
+                // dataTable.ajax.reload();
+                var element = document.getElementById('btn-' + id);
+                element.className = element.className.replace(/\bbtn btn-success text-white\b/g, "btn btn-success text-white d-lg-none");
             }
             else {
                 toastr.error(data.message);
@@ -73,7 +78,9 @@ function Delete(id){
                 success: function (data){
                     if(data.success){
                         toastr.success(data.message);
-                        dataTable.ajax.reload();
+                        var element = document.getElementById('btn-' + id);
+                        element.className = element.className.replace(/\bbtn btn-success text-white d-lg-none\b/g, "btn btn-success text-white");
+                        //dataTable.ajax.reload();
                     }
                     else {
                         toastr.error(data.message);
