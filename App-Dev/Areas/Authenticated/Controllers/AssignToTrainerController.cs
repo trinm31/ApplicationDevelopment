@@ -32,11 +32,6 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             return View();
         }
-        // GET
-        public async Task<IActionResult> Assign()
-        {
-            return View();
-        }
         public async Task<IActionResult> AssignToTrainer()
         {
             var trainerList = await _unitOfWork.TrainerProfile.GetAllAsync();
