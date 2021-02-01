@@ -31,7 +31,14 @@ namespace App_Dev.Areas.Authenticated.Controllers
         // GET
         public async Task<IActionResult> Enroll()
         {
-            return View();
+            var traineeList = await _unitOfWork.TraineeProfile.GetAllAsync();
+            var enrollsList = await _unitOfWork.Enroll.GetAllAsync();
+            EnrollVM enrollVm = new EnrollVM()
+            {
+                TraineeList = traineeList,
+                EnrollList = enrollsList
+            };
+            return View(enrollVm);
         }
         
         #region Api Calls

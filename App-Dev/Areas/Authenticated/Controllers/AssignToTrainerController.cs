@@ -32,10 +32,16 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             return View();
         }
-        // GET
-        public async Task<IActionResult> Assign()
+        public async Task<IActionResult> AssignToTrainer()
         {
-            return View();
+            var trainerList = await _unitOfWork.TrainerProfile.GetAllAsync();
+            var assignList = await _unitOfWork.CourseAssignToTrainer.GetAllAsync();
+            AssignToTrainerVM assignToTrainerVm = new AssignToTrainerVM()
+            {
+                TrainerList = trainerList,
+                AssignList = assignList
+            };
+            return View(assignToTrainerVm);
         }
         
         #region Api Calls
@@ -53,7 +59,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
             return Json(new {data = allObj});
         }
         [HttpPost]
-        public async Task<IActionResult> Assign(int id, [FromBody] string trainerid)
+        public async Task<IActionResult> AssignToTrainer(int id, [FromBody] string trainerid)
         {
             var claimsIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
