@@ -87,7 +87,7 @@
                     <span asp-validation-for="Input.ExperimentDetail" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <select asp-for="Input.department" asp-items="Html.GetEnumSelectList<Department>()">
+                    <select asp-for="Input.department" asp-items="Html.GetEnumSelectList<Department>()" class="form-control">
                         <option selected="selected" value="">Please select</option>
                     </select>
                     <span asp-validation-for="Input.department" class="text-danger"></span>
@@ -129,7 +129,7 @@
                     <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <select asp-for="Input.typeOfTrainer" asp-items="Html.GetEnumSelectList<TypeOfTrainer>()">
+                    <select asp-for="Input.typeOfTrainer" asp-items="Html.GetEnumSelectList<TypeOfTrainer>()" class="form-control">
                         <option selected="selected" value="">Please select</option>
                     </select>
                     <span asp-validation-for="Input.typeOfTrainer" class="text-danger"></span>

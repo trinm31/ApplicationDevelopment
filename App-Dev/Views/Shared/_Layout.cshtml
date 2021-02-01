@@ -25,9 +25,6 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
                     @if (User.IsInRole(SD.Role_Admin))
                     {
                         <li class="nav-item">
@@ -36,6 +33,9 @@
                     }
                     @if (User.IsInRole(SD.Role_Staff))
                     {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="EnrollRequest" asp-action="Index">Enroll Request</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 User Management
@@ -44,6 +44,35 @@
                                 <a class="dropdown-item " asp-area="Authenticated" asp-controller="Users" asp-action="TrainerManager">Trainer Management</a>
                                 <a class="dropdown-item " asp-area="Authenticated" asp-controller="Users" asp-action="TraineeManager">Trainee Management</a>
                             </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Management
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Categories" asp-action="Index">Categories</a>
+                                <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Courses" asp-action="Index">Courses</a>
+                                <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Enroll" asp-action="Index">Enroll</a>
+                                <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="AssignToTrainer" asp-action="Index">Assign Trainer</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Overview" asp-action="Index">Overview</a>
+                        </li>
+                    }
+                    @if (User.IsInRole(SD.Role_Trainer))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Trainer" asp-action="Index">Assigned Course</a>
+                        </li>
+                    }
+                    @if (User.IsInRole(SD.Role_Trainee))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Trainee" asp-action="Index">Enrolled Course</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Authenticated" asp-controller="Trainee" asp-action="AvailableCourse">Available Course</a>
                         </li>
                     }
                 </ul>
