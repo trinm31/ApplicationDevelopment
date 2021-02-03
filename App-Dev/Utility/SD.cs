@@ -10,5 +10,7 @@ namespace App_Dev.Utility
         public const string Request = "Request";
         public const string Approve = "Approve";
         public const string Reject = "Reject";
+
+        public const int MaxTrainerNumberDisplay = 3;
     }
 }

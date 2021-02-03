@@ -45,7 +45,8 @@ namespace App_Dev.Areas.Authenticated.Controllers
             if (ModelState.IsValid)
             {
                 var nameFromDb =
-                    await _unitOfWork.CourseCategory.GetAllAsync(c => c.Name == category.Name && c.Id != category.Id);
+                    await _unitOfWork.CourseCategory
+                        .GetAllAsync(c => c.Name == category.Name && c.Id != category.Id);
                 var isNameExist = nameFromDb.Count() > 0 ? true : false;
                 if (category.Id == 0 && !isNameExist )
                 {

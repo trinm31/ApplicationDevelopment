@@ -42,7 +42,8 @@ namespace App_Dev.Areas.Authenticated.Controllers
             }
             var claimsIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var isExist = await _unitOfWork.Enroll.GetAllAsync(u => u.CourseId == id && u.TraineeId == claims.Value && u.EnrollStatus == SD.Request);
+            var isExist = await _unitOfWork.Enroll
+                .GetAllAsync(u => u.CourseId == id && u.TraineeId == claims.Value && u.EnrollStatus == SD.Request);
                 
             if (isExist.Count() == 0)
             {

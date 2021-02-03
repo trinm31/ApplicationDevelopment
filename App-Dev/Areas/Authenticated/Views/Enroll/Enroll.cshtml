@@ -42,10 +42,10 @@
                         <div class="text-center">
                             @{
                                 var courseId = Context.GetRouteData().Values["id"];
-                                var isExist = Model.EnrollList.Where(t => t.TraineeId.ToString() == @trainee.Id
+                                var trainees = Model.EnrollList.Where(t => t.TraineeId.ToString() == @trainee.Id
                                                                           && t.CourseId.ToString() == courseId.ToString());
                             }
-                            @if (isExist.Count() > 0)
+                            @if (trainees.Any())
                             {
                                 <a id="btnDelete-${data}" onclick="Delete('@trainee.Id')" class="btn btn-danger text-white" style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i> Delete

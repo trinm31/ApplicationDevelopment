@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace App_Dev.Models
 {
-    public class Enroll
+    public class Enroll // Enrollment
     {
         [Key] 
         public int Id { get; set; }

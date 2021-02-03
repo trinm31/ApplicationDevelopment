@@ -5,7 +5,7 @@ using App_Dev.Utility.Enum;
 
 namespace App_Dev.Models
 {
-    public class TrainerProfile : ApplicationUser
+    public class TrainerProfile : ApplicationUser // Trainer
     {
         [Required]
         public TypeOfTrainer TypeOfTrainer { get; set; }

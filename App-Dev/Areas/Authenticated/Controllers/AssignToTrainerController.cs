@@ -32,6 +32,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             return View();
         }
+        
         public async Task<IActionResult> AssignToTrainer()
         {
             var trainerList = await _unitOfWork.TrainerProfile.GetAllAsync();
@@ -79,9 +80,10 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 }
                
                 
-                var isExist = await _unitOfWork.CourseAssignToTrainer.GetAllAsync(u => u.CourseId == id && u.TrainerId == trainerid);
+                var result = await _unitOfWork.CourseAssignToTrainer
+                    .GetAllAsync(u => u.CourseId == id && u.TrainerId == trainerid);
                 
-                if (isExist.Count() == 0)
+                if (result.Any())
                 {
                     CourseAssignToTrainer courseAssignToTrainer = new CourseAssignToTrainer()
                     {
@@ -95,10 +97,15 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 {
                     return Json(new { success = false, message = "Already Assign" });
                 }
-                var maxTrainer = await _unitOfWork.CourseAssignToTrainer.GetAllAsync(u => u.CourseId == id);
-                if (maxTrainer.Count() > 2)
+                var maxTrainer = await _unitOfWork.CourseAssignToTrainer
+                    .GetAllAsync(u => u.CourseId == id);
+                if (maxTrainer.Count() >= SD.MaxTrainerNumberDisplay) // magic number, magic string 
                 {
-                    return Json(new { success = false, message = "Already 3 trainer has assigned" });
+                    return Json(new
+                    {
+                        success = false, 
+                        message = $"Already {SD.MaxTrainerNumberDisplay} trainer has assigned"
+                    });
                 }
             }
             _unitOfWork.Save();
@@ -108,7 +115,8 @@ namespace App_Dev.Areas.Authenticated.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id, [FromBody] string trainerid)
         {
-            var objFromDb = await _unitOfWork.CourseAssignToTrainer.GetFirstOrDefaultAsync(u => u.CourseId == id && u.TrainerId == trainerid);
+            var objFromDb = await _unitOfWork.CourseAssignToTrainer
+                .GetFirstOrDefaultAsync(u => u.CourseId == id && u.TrainerId == trainerid);
             if (objFromDb == null)
             {
                 return Json(new {success = false, message = "Error while Deleting"});
