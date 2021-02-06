@@ -7,7 +7,7 @@ namespace App_Dev.Models.ViewModels
 {
     public class OverviewVM
     {
-        public IEnumerable<CourseAssignToTrainer> TrainerList { get; set; }
-        public IEnumerable<Enroll> TraineeList { get; set; }
+        public IEnumerable<CourseTrainer> TrainerList { get; set; }
+        public IEnumerable<Enrollment> TraineeList { get; set; }
     }
 }

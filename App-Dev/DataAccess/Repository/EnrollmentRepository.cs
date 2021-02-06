@@ -6,17 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App_Dev.DataAccess.Repository
 {
-    public class CourseAssignToTrainerRepository: RepositoryAsync<CourseAssignToTrainer>, ICourseAssignToTrainerRepository
+    public class EnrollmentRepository: RepositoryAsync<Enrollment>, IEnrollmentRepository
     {
         private readonly ApplicationDbContext _db;
-        public CourseAssignToTrainerRepository(ApplicationDbContext db) : base(db)
+        public EnrollmentRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
 
-        public async Task Update(CourseAssignToTrainer courseAssignToTrainer)
+        public async Task Update(Enrollment enrollment)
         {
-            _db.Update(courseAssignToTrainer);
+            _db.Update(enrollment);
         }
     }
 }

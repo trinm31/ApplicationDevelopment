@@ -16,9 +16,9 @@ namespace App_Dev.DataAccess.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<CourseAssignToTrainer> CourseAssignToTrainers { get; set; }
+        public DbSet<CourseTrainer> courseTrainers { get; set; }
         public DbSet<CourseCategory> CourseCategories { get; set; }
-        public DbSet<Enroll> Enrolls { get; set; }
+        public DbSet<Enrollment> Enrolls { get; set; }
         public DbSet<TraineeProfile> TraineeProfiles { get; set; }
         public DbSet<TrainerProfile> TrainerProfiles { get; set; }
         

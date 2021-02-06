@@ -32,7 +32,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var objFromdb = await _unitOfWork.Enroll.GetAllAsync(u => u.TraineeId == claims.Value && u.EnrollStatus == SD.Approve);
+            var objFromdb = await _unitOfWork.Enrollment.GetAllAsync(u => u.TraineeId == claims.Value && u.EnrollStatus == SD.Approve);
             List<Course> courses = new List<Course>();
             foreach (var obj in objFromdb)
             {
@@ -45,7 +45,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var objFromdb = await _unitOfWork.Enroll.GetAllAsync(u => u.TraineeId == claims.Value && u.EnrollStatus == SD.Approve);
+            var objFromdb = await _unitOfWork.Enrollment.GetAllAsync(u => u.TraineeId == claims.Value && u.EnrollStatus == SD.Approve);
             List<Course> availablecourse = new List<Course>();
             var allcourse = await _unitOfWork.Course.GetAllAsync(includeProperties:"CourseCategory");
             availablecourse = allcourse.Except(allcourse.Where(i => objFromdb.Select(o => o.CourseId).ToList().Contains(i.Id))).ToList();

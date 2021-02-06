@@ -25,7 +25,7 @@ $(document).ready(function () {
 function loadDataTable(url) {
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": "/Authenticated/EnrollRequest/" + url
+            "url": "/Authenticated/API/EnrollRequest/" + url
         },
         "columns": [
             { "data": "traineeProfile.name", "width": "15%" },
@@ -54,7 +54,7 @@ function loadDataTable(url) {
 function Approve(id){
     $.ajax({
         type: "POST",
-        url: '/Authenticated/EnrollRequest/Approve',
+        url: '/Authenticated/API/EnrollRequest/Approve',
         data: JSON.stringify(id),
         contentType: "application/json",
         success: function (data){
@@ -72,7 +72,7 @@ function Approve(id){
 function Reject(id){
     $.ajax({
         type: "POST",
-        url: '/Authenticated/EnrollRequest/Reject',
+        url: '/Authenticated/API/EnrollRequest/Reject',
         data: JSON.stringify(id),
         contentType: "application/json",
         success: function (data){

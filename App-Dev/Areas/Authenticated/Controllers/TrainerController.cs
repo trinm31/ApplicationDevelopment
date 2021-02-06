@@ -32,7 +32,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var objFromdb = await _unitOfWork.CourseAssignToTrainer.GetAllAsync(u => u.TrainerId == claims.Value);
+            var objFromdb = await _unitOfWork.CourseTrainer.GetAllAsync(u => u.TrainerId == claims.Value);
             List<Course> courses = new List<Course>();
             foreach (var obj in objFromdb)
             {

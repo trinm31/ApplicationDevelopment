@@ -31,7 +31,7 @@ function Delete(id){
         if (willDelete){
             $.ajax({
                 type: "POST",
-                url: "/Authenticated/Enroll/Delete/" + idUrl,
+                url: "/Authenticated/API/Enrollment/Delete/" + idUrl,
                 data: JSON.stringify(id),
                 contentType: "application/json",
                 success: function (data){

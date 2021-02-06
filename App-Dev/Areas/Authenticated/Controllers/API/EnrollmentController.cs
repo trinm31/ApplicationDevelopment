@@ -1,66 +1,48 @@
+﻿using App_Dev.DataAccess.Repository.IRepository;
+using App_Dev.Models;
+using App_Dev.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using App_Dev.DataAccess.Repository.IRepository;
-using App_Dev.Models;
-using App_Dev.Models.ViewModels;
-using App_Dev.Utility;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 
-namespace App_Dev.Areas.Authenticated.Controllers
+namespace App_Dev.Areas.Authenticated.Controllers.Api
 {
     [Area("Authenticated")]
     [Authorize(Roles = SD.Role_Staff)]
-    public class EnrollController : Controller
+    public class EnrollmentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
-        public EnrollController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
+        public EnrollmentController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
-        // GET
-        public IActionResult Index()
-        {
-            return View();
-        }
-        // GET
-        public async Task<IActionResult> Enroll()
-        {
-            var traineeList = await _unitOfWork.TraineeProfile.GetAllAsync();
-            var enrollsList = await _unitOfWork.Enroll.GetAllAsync();
-            EnrollVM enrollVm = new EnrollVM()
-            {
-                TraineeList = traineeList,
-                EnrollList = enrollsList
-            };
-            return View(enrollVm);
-        }
-        
-        #region Api Calls
-
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var allObj = await _unitOfWork.Course.GetAllAsync(includeProperties:"CourseCategory");
-            return Json(new {data = allObj});
+            var allObj = await _unitOfWork.Course.GetAllAsync(includeProperties: "CourseCategory");
+            return Json(new { data = allObj });
         }
         [HttpGet]
         public async Task<IActionResult> GetTrainee()
         {
             var allObj = await _unitOfWork.TraineeProfile.GetAllAsync();
-            return Json(new {data = allObj});
+            return Json(new { data = allObj });
         }
         [HttpPost]
-        public async Task<IActionResult> Enroll(int id, [FromBody] string traineeid)
+        public async Task<IActionResult> Enrollment(int id, [FromBody] string traineeid)
         {
-            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var userFromDb = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == claims.Value);
+            var userFromDb = await _unitOfWork.ApplicationUser
+                .GetFirstOrDefaultAsync(u => u.Id == claims.Value);
             var usertemp = await _userManager.FindByIdAsync(userFromDb.Id);
             var roleTemp = await _userManager.GetRolesAsync(usertemp);
             userFromDb.Role = roleTemp.FirstOrDefault();
@@ -75,18 +57,19 @@ namespace App_Dev.Areas.Authenticated.Controllers
                     return Json(new { success = false, message = "Traineeid null" });
                 }
 
-                var isExist = await _unitOfWork.Enroll.GetAllAsync(u => u.CourseId == id && u.TraineeId == traineeid);
-                
+                var isExist = await _unitOfWork.Enrollment
+                    .GetAllAsync(u => u.CourseId == id && u.TraineeId == traineeid);
+
                 if (isExist.Count() == 0)
                 {
-                    Enroll enroll = new Enroll()
+                    Enrollment enrollment = new Enrollment()
                     {
                         CourseId = id,
                         TraineeId = traineeid,
                         Time = DateTime.Now,
                         EnrollStatus = SD.Approve
                     };
-                    await _unitOfWork.Enroll.AddAsync(enroll);
+                    await _unitOfWork.Enrollment.AddAsync(enrollment);
                 }
                 else
                 {
@@ -96,20 +79,20 @@ namespace App_Dev.Areas.Authenticated.Controllers
             _unitOfWork.Save();
             return Json(new { success = true, message = "Operation Successful." });
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id, [FromBody] string traineeid)
         {
-            var objFromDb = await _unitOfWork.Enroll.GetFirstOrDefaultAsync(u => u.CourseId == id && u.TraineeId == traineeid);
+            var objFromDb = await _unitOfWork.Enrollment
+                .GetFirstOrDefaultAsync(u => u.CourseId == id && u.TraineeId == traineeid);
             if (objFromDb == null)
             {
-                return Json(new {success = false, message = "Error while Deleting"});
+                return Json(new { success = false, message = "Error while Deleting" });
             }
 
-            await _unitOfWork.Enroll.RemoveAsync(objFromDb);
+            await _unitOfWork.Enrollment.RemoveAsync(objFromDb);
             _unitOfWork.Save();
-            return Json(new {success = true, message = "Delete successful"});
+            return Json(new { success = true, message = "Delete successful" });
         }
-        #endregion
     }
 }

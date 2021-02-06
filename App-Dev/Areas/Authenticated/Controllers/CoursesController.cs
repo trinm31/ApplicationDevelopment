@@ -22,7 +22,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
             _unitOfWork = unitOfWork;
         }
         // GET
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -97,27 +97,5 @@ namespace App_Dev.Areas.Authenticated.Controllers
             };
             return View(courseVm);
         }
-        #region Api Calls
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var allObj = await _unitOfWork.Course.GetAllAsync(includeProperties:"CourseCategory");
-            return Json(new {data = allObj});
-        }
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var objFromDb = await _unitOfWork.Course.GetAsync(id);
-            if (objFromDb == null)
-            {
-                return Json(new {success = false, message = "Error while Deleting"});
-            }
-
-            await _unitOfWork.Course.RemoveAsync(objFromDb);
-            _unitOfWork.Save();
-            return Json(new {success = true, message = "Delete successful"});
-        }
-        #endregion
     }
 }

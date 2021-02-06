@@ -3,8 +3,8 @@ using App_Dev.Models;
 
 namespace App_Dev.DataAccess.Repository.IRepository
 {
-    public interface IEnrollRepository: IRepositoryAsync<Enroll>
+    public interface IEnrollmentRepository: IRepositoryAsync<Enrollment>
     {
-        Task Update(Enroll enroll);
+        Task Update(Enrollment enrollment);
     }
 }
