@@ -47,12 +47,11 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 var nameFromDb =
                     await _unitOfWork.CourseCategory
                         .GetAllAsync(c => c.Name == category.Name && c.Id != category.Id);
-                var isNameExist = nameFromDb.Count() > 0 ? true : false;
-                if (category.Id == 0 && !isNameExist )
+                if (category.Id == 0 && !nameFromDb.Any())
                 {
                     await _unitOfWork.CourseCategory.AddAsync(category);
                 }
-                else if (category.Id != 0 && !isNameExist)
+                else if (category.Id != 0 && !nameFromDb.Any())
                 {
                     await _unitOfWork.CourseCategory.Update(category);
                 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace App_Dev.Models.ViewModels
 {
-    public class OverviewVM
+    public class OverviewViewModel
     {
         public IEnumerable<CourseTrainer> TrainerList { get; set; }
         public IEnumerable<Enrollment> TraineeList { get; set; }

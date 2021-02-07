@@ -36,7 +36,6 @@ namespace App_Dev.Areas.Authenticated.Controllers.API
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                 var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u => u.Id != claims.Value);
-
                 foreach (var user in userList)
                 {
                     var usertemp = await _userManager.FindByIdAsync(user.Id);
@@ -97,25 +96,25 @@ namespace App_Dev.Areas.Authenticated.Controllers.API
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var userFromDb = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == claims.Value);
+            var claimUser = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == claims.Value);
 
-            var objFromDb = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == id);
-            if (objFromDb == null)
+            var applicationUser = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == id);
+            if (applicationUser == null)
             {
                 return Json(new { success = false, message = "Error while Locking/Unlocking" });
             }
-            if (userFromDb.Id == objFromDb.Id)
+            if (claimUser.Id == applicationUser.Id)
             {
                 return Json(new { success = false, message = "Error You are currently lock your account" });
             }
-            if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
+            if (applicationUser.LockoutEnd != null && applicationUser.LockoutEnd > DateTime.Now)
             {
                 //user is currently locked, we will unlock them
-                objFromDb.LockoutEnd = DateTime.Now;
+                applicationUser.LockoutEnd = DateTime.Now;
             }
             else
             {
-                objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
+                applicationUser.LockoutEnd = DateTime.Now.AddYears(1000);
             }
             _unitOfWork.Save();
             return Json(new { success = true, message = "Operation Successful." });
@@ -123,12 +122,12 @@ namespace App_Dev.Areas.Authenticated.Controllers.API
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
-            var objFromDb = await _unitOfWork.ApplicationUser.GetAsync(id);
-            if (objFromDb == null)
+            var applicationUser = await _unitOfWork.ApplicationUser.GetAsync(id);
+            if (applicationUser == null)
             {
                 return Json(new { success = false, message = "Error while Deleting" });
             }
-            await _userManager.DeleteAsync(objFromDb);
+            await _userManager.DeleteAsync(applicationUser);
             return Json(new { success = true, message = "Delete successful" });
         }
     }

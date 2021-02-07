@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Routing
-@model App_Dev.Models.ViewModels.CourseTrainerVM
+@model App_Dev.Models.ViewModels.CourseTrainerViewModel
 
 @{
     ViewBag.Title = "title";
@@ -42,21 +42,22 @@
                         <div class="text-center">
                             @{
                                 var courseId = Context.GetRouteData().Values["id"];
-                                var isExist = Model.AssignList.Where(t => t.TrainerId.ToString() == @trainer.Id
+                                var trainers = Model.AssignList.Where(t => t.TrainerId.ToString() == @trainer.Id
                                                                           && t.CourseId.ToString() == courseId.ToString());
+                                @if (trainers.Any())
+                                {
+                                    <a onclick="Delete('@trainer.Id')" class="btn btn-danger text-white" style="cursor: pointer">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a onclick="Assign('@trainer.Id')" class="btn btn-success text-white" style="cursor: pointer">
+                                        <i class="fas fa-plus"></i> Assign
+                                    </a>
+                                }
                             }
-                            @if (isExist.Count() > 0)
-                            {
-                                <a id="btnDelete-${data}" onclick="Delete('@trainer.Id')" class="btn btn-danger text-white" style="cursor: pointer">
-                                    <i class="fas fa-trash-alt"></i> Delete
-                                </a>
-                            }
-                            else
-                            {
-                                <a id="btn-${data}" onclick="Assign('@trainer.Id')" class="btn btn-success text-white" style="cursor: pointer">
-                                    <i class="fas fa-plus"></i> Assign
-                                </a>
-                            }
+
                         </div>
                     </td>
                 </tr>

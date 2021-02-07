@@ -32,9 +32,9 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var objFromdb = await _unitOfWork.Enrollment.GetAllAsync(u => u.TraineeId == claims.Value && u.EnrollStatus == SD.Approve);
+            var enrollments = await _unitOfWork.Enrollment.GetAllAsync(u => u.TraineeId == claims.Value && u.EnrollStatus == SD.Approve);
             List<Course> courses = new List<Course>();
-            foreach (var obj in objFromdb)
+            foreach (var obj in enrollments)
             {
                 var course = await _unitOfWork.Course.GetFirstOrDefaultAsync(c => c.Id == obj.CourseId, includeProperties: "CourseCategory");
                 courses.Add(course);
@@ -45,10 +45,10 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var objFromdb = await _unitOfWork.Enrollment.GetAllAsync(u => u.TraineeId == claims.Value && u.EnrollStatus == SD.Approve);
+            var enrollments = await _unitOfWork.Enrollment.GetAllAsync(u => u.TraineeId == claims.Value && u.EnrollStatus == SD.Approve);
             List<Course> availablecourse = new List<Course>();
             var allcourse = await _unitOfWork.Course.GetAllAsync(includeProperties:"CourseCategory");
-            availablecourse = allcourse.Except(allcourse.Where(i => objFromdb.Select(o => o.CourseId).ToList().Contains(i.Id))).ToList();
+            availablecourse = allcourse.Except(allcourse.Where(i => enrollments.Select(o => o.CourseId).ToList().Contains(i.Id))).ToList();
             ViewData["Message"] = TempData["Message"];
             return View(availablecourse);
         }

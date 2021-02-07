@@ -42,10 +42,15 @@ namespace App_Dev.Areas.Authenticated.Controllers
             }
             var claimsIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var isExist = await _unitOfWork.Enrollment
+            var enrolled = await _unitOfWork.Enrollment
                 .GetAllAsync(u => u.CourseId == id && u.TraineeId == claims.Value && u.EnrollStatus == SD.Request);
                 
-            if (isExist.Count() == 0)
+            if (enrolled.Any())
+            {
+                TempData["Message"] = "Error: Your request already send";
+                return RedirectToAction("AvailableCourse", "Trainee");
+            }
+            else
             {
                 Enrollment enrollment = new Enrollment()
                 {
@@ -55,14 +60,8 @@ namespace App_Dev.Areas.Authenticated.Controllers
                     EnrollStatus = SD.Request
                 };
                 await _unitOfWork.Enrollment.AddAsync(enrollment);
-                _unitOfWork.Save();
+                _unitOfWork.Save();   
             }
-            else
-            {
-                TempData["Message"] = "Error: Your request already send";
-                return RedirectToAction("AvailableCourse", "Trainee");
-            }
-
             return View("ConfirmRequest");
         }
     }

@@ -33,7 +33,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var traineeList = await _unitOfWork.TraineeProfile.GetAllAsync();
             var enrollsList = await _unitOfWork.Enrollment.GetAllAsync();
-            EnrollmentVM enrollVm = new EnrollmentVM()
+            EnrollmentViewModel enrollVm = new EnrollmentViewModel()
             {
                 TraineeList = traineeList,
                 EnrollList = enrollsList

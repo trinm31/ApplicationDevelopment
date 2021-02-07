@@ -35,7 +35,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var trainerFromDb = await _unitOfWork.CourseTrainer.GetAllAsync(u => u.CourseId == id, includeProperties:"TrainerProfile");
             var traineeFromDb = await _unitOfWork.Enrollment.GetAllAsync(e => e.CourseId == id, includeProperties:"TraineeProfile");
-            OverviewVM overviewVM = new OverviewVM()
+            OverviewViewModel overviewVM = new OverviewViewModel()
             {
                 TrainerList = trainerFromDb,
                 TraineeList = traineeFromDb

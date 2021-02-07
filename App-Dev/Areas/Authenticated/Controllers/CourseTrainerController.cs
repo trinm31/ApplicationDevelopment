@@ -37,7 +37,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var trainerList = await _unitOfWork.TrainerProfile.GetAllAsync();
             var assignList = await _unitOfWork.CourseTrainer.GetAllAsync();
-            CourseTrainerVM courseTrainerVM = new CourseTrainerVM()
+            CourseTrainerViewModel courseTrainerVM = new CourseTrainerViewModel()
             {
                 TrainerList = trainerList,
                 AssignList = assignList
