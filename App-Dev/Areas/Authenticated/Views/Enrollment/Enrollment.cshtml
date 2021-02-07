@@ -1,5 +1,5 @@
 @using Microsoft.AspNetCore.Routing
-@model App_Dev.Models.ViewModels.EnrollVM
+@model App_Dev.Models.ViewModels.EnrollmentViewModel
 
 @{
     ViewBag.Title = "title";
@@ -44,18 +44,18 @@
                                 var courseId = Context.GetRouteData().Values["id"];
                                 var trainees = Model.EnrollList.Where(t => t.TraineeId.ToString() == @trainee.Id
                                                                           && t.CourseId.ToString() == courseId.ToString());
-                            }
-                            @if (trainees.Any())
-                            {
-                                <a id="btnDelete-${data}" onclick="Delete('@trainee.Id')" class="btn btn-danger text-white" style="cursor: pointer">
-                                    <i class="fas fa-trash-alt"></i> Delete
-                                </a>
-                            }
-                            else
-                            {
-                                <a id="btn-${data}" onclick="Enroll('@trainee.Id')" class="btn btn-success text-white" style="cursor: pointer">
-                                    <i class="fas fa-plus"></i> Enroll
-                                </a>
+                                @if (trainees.Any())
+                                {
+                                    <a onclick="Delete('@trainee.Id')" class="btn btn-danger text-white" style="cursor: pointer">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a onclick="Enroll('@trainee.Id')" class="btn btn-success text-white" style="cursor: pointer">
+                                        <i class="fas fa-plus"></i> Enroll
+                                    </a>
+                                }
                             }
                         </div>
                     </td>

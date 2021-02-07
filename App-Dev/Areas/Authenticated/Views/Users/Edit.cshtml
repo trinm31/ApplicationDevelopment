@@ -1,5 +1,5 @@
 @using App_Dev.Utility.Enum
-@model App_Dev.Models.ViewModels.UsersVM
+@model App_Dev.Models.ViewModels.UsersViewModel
 
 @{
     var title = "Edit User Profile";
@@ -32,6 +32,15 @@
                     <div class="col-8">
                         <input asp-for="TrainerProfile.Name" class="form-control">
                         <span asp-validation-for="TrainerProfile.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="TrainerProfile.PhoneNumber"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="TrainerProfile.PhoneNumber" class="form-control">
+                        <span asp-validation-for="TrainerProfile.PhoneNumber" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -79,7 +88,7 @@
          </div>
          <div class="col-8 pt-4">
              <input type="hidden" asp-for="TraineeProfile.Id" />
-             <partial name="_StatusMessage" model="@ViewData["Message"]"/>
+             <partial name="_StatusMessage" model="@ViewData["Message"]" />
              <div class="form-group row">
                  <div class="col-4">
                      <label asp-for="TraineeProfile.Email"></label>
@@ -96,6 +105,15 @@
                  <div class="col-8">
                      <input asp-for="TraineeProfile.Name" class="form-control">
                      <span asp-validation-for="TraineeProfile.Name" class="text-danger"></span>
+                 </div>
+             </div>
+             <div class="form-group row">
+                 <div class="col-4">
+                     <label asp-for="TraineeProfile.PhoneNumber"></label>
+                 </div>
+                 <div class="col-8">
+                     <input asp-for="TraineeProfile.PhoneNumber" class="form-control">
+                     <span asp-validation-for="TraineeProfile.PhoneNumber" class="text-danger"></span>
                  </div>
              </div>
              <div class="form-group row">

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace App_Dev.Models
 {
-    public class Enroll // Enrollment
+    public class CourseTrainer 
     {
         [Key] 
         public int Id { get; set; }
@@ -13,10 +13,9 @@ namespace App_Dev.Models
         [ForeignKey("CourseId")]
         public Course Course { get; set; }
         [Required]
-        public string TraineeId { get; set; }
-        [ForeignKey("TraineeId")]
-        public TraineeProfile TraineeProfile { get; set; }
+        public string TrainerId { get; set; }
+        [ForeignKey("TrainerId")]
+        public TrainerProfile TrainerProfile { get; set; }
         public DateTime Time { get; set; }
-        public string EnrollStatus { get; set; }
     }
 }

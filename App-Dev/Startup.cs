@@ -35,7 +35,7 @@ namespace App_Dev
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("ApplicationDbContextConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()  
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSingleton<IEmailSender, EmailSender>();
@@ -86,6 +86,9 @@ namespace App_Dev
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{area=Unauthenticated}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                   name: "api",
+                   pattern: "{area=Authenticated}/API/{controller}/{action}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

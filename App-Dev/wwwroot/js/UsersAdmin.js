@@ -7,7 +7,7 @@ $(document).ready(function () {
 function loadDataTable(){
     dataTable = $('#tblData').DataTable({
         "ajax":{
-            "url": "/Authenticated/Users/GetAll"
+            "url": "/Authenticated/API/Users/GetAll"
         },
         "columns":[
             {"data": "name", "width": "15%"},
@@ -24,7 +24,7 @@ function loadDataTable(){
                                 <a class="btn btn-danger text-white" onclick=LockUnlock("${data.id}") style="cursor: pointer">
                                     <i class="fas fa-lock-open"></i> Unlock
                                 </a>
-                                <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/Users/Delete/${data.id}") style="cursor: pointer">
+                                <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/API/Users/Delete/${data.id}") style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                                 <a href="/Authenticated/Users/ForgotPassword/${data.id}" class="btn btn-warning text-white " style="cursor: pointer">
@@ -38,10 +38,10 @@ function loadDataTable(){
                                 <a class="btn btn-success text-white" onclick=LockUnlock("${data.id}") style="cursor: pointer">
                                     <i class="fas fa-lock"></i> lock
                                 </a>
-                                <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/Users/Delete/${data.id}") style="cursor: pointer">
+                                <a class="btn btn-danger text-white" onclick=Delete("/Authenticated/API/Users/Delete/${data.id}") style="cursor: pointer">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
-                                <a href="/Authenticated/Users/ForgotPassword/${data.id}" class="btn btn-warning text-white" style="cursor: pointer">
+                                <a href="/Authenticated/API/Users/ForgotPassword/${data.id}" class="btn btn-warning text-white" style="cursor: pointer">
                                         Reset Pass
                                 </a>  
                             </div>
@@ -60,7 +60,7 @@ function loadDataTable(){
 function LockUnlock(id){
     $.ajax({
         type: "POST",
-        url: '/Authenticated/Users/LockUnlock',
+        url: '/Authenticated/API/Users/LockUnlock',
         data: JSON.stringify(id),
         contentType: "application/json",
         success: function (data){

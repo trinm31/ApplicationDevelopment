@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace App_Dev.Models.ViewModels
 {
-    public class ForgotPasswordVM
+    public class ForgotPasswordViewModel
     {
         public string Email { get; set; }
     }

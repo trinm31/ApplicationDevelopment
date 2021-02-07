@@ -8,8 +8,8 @@ namespace App_Dev.DataAccess.Repository.IRepository
         IApplicationUserRepository ApplicationUser { get; }
         ICourseRepository Course { get; }
         ICourseCategoryRepository CourseCategory { get; }
-        ICourseAssignToTrainerRepository CourseAssignToTrainer { get; }
-        IEnrollRepository Enroll { get; }
+        ICourseTrainerRepository CourseTrainer { get;}
+        IEnrollmentRepository Enrollment { get; }
         ITraineeProfileRepository TraineeProfile { get; }
         ITrainerProfileRepository TrainerProfile { get; }
         void Save();

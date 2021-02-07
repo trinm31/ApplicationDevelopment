@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace App_Dev.Models.ViewModels
 {
-    public class ResetPasswordVM
+    public class ResetPasswordViewModel
     {
         [Required]
         [EmailAddress]

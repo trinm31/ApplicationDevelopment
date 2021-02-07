@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace App_Dev.Models.ViewModels
 {
-    public class EnrollVM
+    public class EnrollmentViewModel
     {
-        public IEnumerable<Enroll> EnrollList { get; set; }
+        public IEnumerable<Enrollment> EnrollList { get; set; }
         public IEnumerable<TraineeProfile> TraineeList { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace App_Dev.Models.ViewModels
 {
-    public class CourseVM
+    public class CourseViewModel
     {
         public Course Course { get; set; }
         public IEnumerable<SelectListItem> CategoryList { get; set; }

@@ -2,7 +2,7 @@ using App_Dev.Utility.Enum;
 
 namespace App_Dev.Models.ViewModels
 {
-    public class UsersVM
+    public class UsersViewModel
     {
         public ApplicationUser ApplicationUser { get; set; }
         public TraineeProfile TraineeProfile { get; set; }

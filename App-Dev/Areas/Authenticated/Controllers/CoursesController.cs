@@ -22,14 +22,14 @@ namespace App_Dev.Areas.Authenticated.Controllers
             _unitOfWork = unitOfWork;
         }
         // GET
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
         public async Task<IActionResult> Upsert(int? id)
         {
             IEnumerable<CourseCategory> CateLists = await _unitOfWork.CourseCategory.GetAllAsync();
-            CourseVM courseVm = new CourseVM()
+            CourseViewModel courseVm = new CourseViewModel()
             {
                 Course = new Course(),
                 CategoryList = CateLists.Select(I => new SelectListItem
@@ -52,26 +52,25 @@ namespace App_Dev.Areas.Authenticated.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(CourseVM courseVm)
+        public async Task<IActionResult> Upsert(CourseViewModel courseVm)
         {
             IEnumerable<CourseCategory> CateLists = await _unitOfWork.CourseCategory.GetAllAsync();
             if (ModelState.IsValid)
             {
                 var nameFromDb =
                     await _unitOfWork.Course.GetAllAsync(c => c.Name == courseVm.Course.Name && c.Id != courseVm.Course.Id);
-                var isNameExist = nameFromDb.Count() > 0 ? true : false;
-                if (courseVm.Course.Id == 0 && !isNameExist)
+                if (courseVm.Course.Id == 0 && !nameFromDb.Any())
                 {
                     await _unitOfWork.Course.AddAsync(courseVm.Course);
                 }
-                else if (courseVm.Course.Id != 0 && !isNameExist)
+                else if (courseVm.Course.Id != 0 && !nameFromDb.Any())
                 {
                    await _unitOfWork.Course.Update(courseVm.Course);
                 }
                 else
                 {
                     ViewData["Message"] = "Error: Name already exists";
-                    courseVm = new CourseVM()
+                    courseVm = new CourseViewModel()
                     {
                         Course = new Course(),
                         CategoryList = CateLists.Select(I => new SelectListItem
@@ -86,7 +85,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 return RedirectToAction(nameof(Index));
             }
            
-            courseVm = new CourseVM()
+            courseVm = new CourseViewModel()
             {
                 Course = new Course(),
                 CategoryList = CateLists.Select(I => new SelectListItem
@@ -97,27 +96,5 @@ namespace App_Dev.Areas.Authenticated.Controllers
             };
             return View(courseVm);
         }
-        #region Api Calls
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var allObj = await _unitOfWork.Course.GetAllAsync(includeProperties:"CourseCategory");
-            return Json(new {data = allObj});
-        }
-        [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var objFromDb = await _unitOfWork.Course.GetAsync(id);
-            if (objFromDb == null)
-            {
-                return Json(new {success = false, message = "Error while Deleting"});
-            }
-
-            await _unitOfWork.Course.RemoveAsync(objFromDb);
-            _unitOfWork.Save();
-            return Json(new {success = true, message = "Delete successful"});
-        }
-        #endregion
     }
 }

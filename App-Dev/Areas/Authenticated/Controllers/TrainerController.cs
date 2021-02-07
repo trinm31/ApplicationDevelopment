@@ -32,9 +32,9 @@ namespace App_Dev.Areas.Authenticated.Controllers
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var objFromdb = await _unitOfWork.CourseAssignToTrainer.GetAllAsync(u => u.TrainerId == claims.Value);
+            var courseTrainers = await _unitOfWork.CourseTrainer.GetAllAsync(u => u.TrainerId == claims.Value);
             List<Course> courses = new List<Course>();
-            foreach (var obj in objFromdb)
+            foreach (var obj in courseTrainers)
             {
                 var course = await _unitOfWork.Course.GetFirstOrDefaultAsync(c => c.Id == obj.CourseId, includeProperties: "CourseCategory");
                 courses.Add(course);
