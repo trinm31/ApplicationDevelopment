@@ -51,8 +51,9 @@
                             {
                                 <div class="form-group">
                                     @Html.DropDownListFor(m => m.Input.Role, Model.Input.RoleList,
-                                   "-Please select a role", new { @class = "form-control" })
+                                        "-Please select a role", new { @class = "form-control" })
                                 </div>
+                                <span class="text-danger">@Html.ValidationMessageFor(m => m.Input.Role)</span>
                             }
                         </div>
                         <button type="submit" class="btn btn-success btn-block"><i class="fas fa-sign-in-alt"></i> Create</button>

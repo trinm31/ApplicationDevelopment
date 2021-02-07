@@ -21,8 +21,6 @@ namespace App_Dev.DataAccess.Initalizer
             _roleManager = roleManager;
             _userManager = userManager;
         }
-
-
         public void Initialize()
         {
             try
