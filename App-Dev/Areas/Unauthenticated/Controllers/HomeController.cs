@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 namespace App_Dev.Areas.Unauthenticated.Controllers
 {
     [Area("Unauthenticated")]
-    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
