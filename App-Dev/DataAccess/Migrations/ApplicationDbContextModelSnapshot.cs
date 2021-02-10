@@ -44,7 +44,27 @@ namespace App_Dev.DataAccess.Migrations
                     b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("App_Dev.Models.CourseAssignToTrainer", b =>
+            modelBuilder.Entity("App_Dev.Models.CourseCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CourseCategories");
+                });
+
+            modelBuilder.Entity("App_Dev.Models.CourseTrainer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,30 +87,10 @@ namespace App_Dev.DataAccess.Migrations
 
                     b.HasIndex("TrainerId");
 
-                    b.ToTable("CourseAssignToTrainers");
+                    b.ToTable("courseTrainers");
                 });
 
-            modelBuilder.Entity("App_Dev.Models.CourseCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CourseCategories");
-                });
-
-            modelBuilder.Entity("App_Dev.Models.Enroll", b =>
+            modelBuilder.Entity("App_Dev.Models.Enrollment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -387,7 +387,7 @@ namespace App_Dev.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("App_Dev.Models.CourseAssignToTrainer", b =>
+            modelBuilder.Entity("App_Dev.Models.CourseTrainer", b =>
                 {
                     b.HasOne("App_Dev.Models.Course", "Course")
                         .WithMany()
@@ -402,7 +402,7 @@ namespace App_Dev.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("App_Dev.Models.Enroll", b =>
+            modelBuilder.Entity("App_Dev.Models.Enrollment", b =>
                 {
                     b.HasOne("App_Dev.Models.Course", "Course")
                         .WithMany()

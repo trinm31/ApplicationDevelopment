@@ -53,7 +53,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 return View();
             }
 
-            ForgotPasswordVM UserEmail = new ForgotPasswordVM()
+            ForgotPasswordViewModel UserEmail = new ForgotPasswordViewModel()
             {
                 Email = user.Email
             };
@@ -62,7 +62,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         [Authorize(Roles = SD.Role_Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         [Authorize(Roles = SD.Role_Admin)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -102,6 +102,11 @@ namespace App_Dev.Areas.Authenticated.Controllers
                     if (result.Succeeded)
                     {
                         return View("ResetPasswordConfirmation");
+                    }
+                    else
+                    {
+                        ViewData["Message"] = "Error: Your Password not permitted";
+                        return View(model);
                     }
 
                     foreach (var error in result.Errors)
@@ -126,7 +131,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
             var usertemp = await _userManager.FindByIdAsync(user.Id);
             var roleTemp = await _userManager.GetRolesAsync(usertemp);
             user.Role = roleTemp.FirstOrDefault();
-            UsersVM usersVm = new UsersVM();
+            UsersViewModel usersVm = new UsersViewModel();
             if (user.Role == SD.Role_Trainer)
             {
                 var trainerProfile = await _unitOfWork.TrainerProfile.GetAsync(id);
@@ -147,54 +152,49 @@ namespace App_Dev.Areas.Authenticated.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = SD.Role_Staff)]
-        public async Task<IActionResult> Edit(UsersVM user)
+        public async Task<IActionResult> Edit(UsersViewModel user)
         {
-            UsersVM usersVm = new UsersVM();
+            UsersViewModel usersVm = new UsersViewModel();
             if (user.ApplicationUser != null)
             {
                 usersVm.ApplicationUser = user.ApplicationUser;
-                var userDb = await _unitOfWork.ApplicationUser.GetAllAsync(u => u.Id == user.ApplicationUser.Id);
-                var isUserExists = userDb.Count() > 0 ? true : false;
+                var applicationUsers = await _unitOfWork.ApplicationUser.GetAllAsync(u => u.Id == user.ApplicationUser.Id);
                 var userEmailDb = await _unitOfWork.ApplicationUser.GetAllAsync(u => u.Email == user.ApplicationUser.Email);
-                var isEmailExists = userEmailDb.Count() > 0 ? true : false;
-                if (!isEmailExists && !isUserExists)
+                if (!userEmailDb.Any() && !applicationUsers.Any())
                 {
                     ViewData["Message"] = "Error: User with this email already exists";
                     return View(usersVm);
                 }
         
-                var userFromDb = await _unitOfWork.ApplicationUser.GetAsync(user.ApplicationUser.Id);
-                userFromDb.Name= user.ApplicationUser.Name;
-                userFromDb.Email = user.ApplicationUser.Email;
+                var applicationUser = await _unitOfWork.ApplicationUser.GetAsync(user.ApplicationUser.Id);
+                applicationUser.Name= user.ApplicationUser.Name;
+                applicationUser.Email = user.ApplicationUser.Email;
 
-                await _unitOfWork.ApplicationUser.Update(userFromDb);
+                await _unitOfWork.ApplicationUser.Update(applicationUser);
                 _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }else if (user.TraineeProfile != null)
             {
                 usersVm.TraineeProfile = user.TraineeProfile;
-                var userDb = await _unitOfWork.TraineeProfile.GetAllAsync(u => u.Id == user.TraineeProfile.Id);
-                var isUserExists = userDb.Count() > 0 ? true : false;
+                var traineeProfiles = await _unitOfWork.TraineeProfile.GetAllAsync(u => u.Id == user.TraineeProfile.Id);
                 var userEmailDb = await _unitOfWork.TraineeProfile.GetAllAsync(u => u.Email == user.TraineeProfile.Email);
-                var isEmailExists = userEmailDb.Count() > 0 ? true : false;
-                var userFromDb = await _unitOfWork.TraineeProfile.GetAsync(user.TraineeProfile.Id);
-                if (!isEmailExists && !isUserExists)
+                var traineeProfile = await _unitOfWork.TraineeProfile.GetAsync(user.TraineeProfile.Id);
+                if (!userEmailDb.Any() && !traineeProfiles.Any())
                 {
                     ViewData["Message"] = "Error: User with this email already exists";
                     return View(usersVm);
                 }
-        
-                
-                userFromDb.Name= user.TraineeProfile.Name;
-                userFromDb.Email = user.TraineeProfile.Email;
-                userFromDb.DateOfBirth = user.TraineeProfile.DateOfBirth;
-                userFromDb.Education = user.TraineeProfile.Education;
-                userFromDb.MainProgrammingLanguage = user.TraineeProfile.MainProgrammingLanguage;
-                userFromDb.ToeicScore = user.TraineeProfile.ToeicScore;
-                userFromDb.ExperimentDetail = user.TraineeProfile.ExperimentDetail;
-                userFromDb.Location = user.TraineeProfile.Location;
-                userFromDb.Department = user.TraineeProfile.Department;
-                await _unitOfWork.TraineeProfile.Update(userFromDb);
+                traineeProfile.Name= user.TraineeProfile.Name;
+                traineeProfile.Email = user.TraineeProfile.Email;
+                traineeProfile.DateOfBirth = user.TraineeProfile.DateOfBirth;
+                traineeProfile.Education = user.TraineeProfile.Education;
+                traineeProfile.MainProgrammingLanguage = user.TraineeProfile.MainProgrammingLanguage;
+                traineeProfile.ToeicScore = user.TraineeProfile.ToeicScore;
+                traineeProfile.ExperimentDetail = user.TraineeProfile.ExperimentDetail;
+                traineeProfile.Location = user.TraineeProfile.Location;
+                traineeProfile.Department = user.TraineeProfile.Department;
+                traineeProfile.PhoneNumber = user.TraineeProfile.PhoneNumber;
+                await _unitOfWork.TraineeProfile.Update(traineeProfile);
                 _unitOfWork.Save();
                 if (User.IsInRole(SD.Role_Staff))
                 {
@@ -205,140 +205,30 @@ namespace App_Dev.Areas.Authenticated.Controllers
             else
             {
                 usersVm.TrainerProfile = user.TrainerProfile;
-                var userDb = await _unitOfWork.TrainerProfile.GetAllAsync(u => u.Id == user.TrainerProfile.Id);
-                var isUserExists = userDb.Count() > 0 ? true : false;
+                var trainerProfiles = await _unitOfWork.TrainerProfile.GetAllAsync(u => u.Id == user.TrainerProfile.Id);
                 var userEmailDb = await _unitOfWork.TrainerProfile.GetAllAsync(u => u.Email == user.TrainerProfile.Email);
-                var isEmailExists = userEmailDb.Count() > 0 ? true : false;
-                var userFromDb = await _unitOfWork.TrainerProfile.GetAsync(user.TrainerProfile.Id);
-                if (!isEmailExists && !isUserExists)
+                var trainerProfile = await _unitOfWork.TrainerProfile.GetAsync(user.TrainerProfile.Id);
+                if (!userEmailDb.Any() && !trainerProfiles.Any())
                 {
                     ViewData["Message"] = "Error: User with this email already exists";
                     return View(usersVm);
                 }
-        
-                
-                userFromDb.Name= user.TrainerProfile.Name;
-                userFromDb.Email = user.TrainerProfile.Email;
-                userFromDb.WorkingPlace = user.TrainerProfile.WorkingPlace;
-                userFromDb.TypeOfTrainer = user.TrainerProfile.TypeOfTrainer;
 
-                await _unitOfWork.TrainerProfile.Update(userFromDb);
+
+                trainerProfile.Name= user.TrainerProfile.Name;
+                trainerProfile.Email = user.TrainerProfile.Email;
+                trainerProfile.WorkingPlace = user.TrainerProfile.WorkingPlace;
+                trainerProfile.TypeOfTrainer = user.TrainerProfile.TypeOfTrainer;
+                trainerProfile.PhoneNumber = user.TrainerProfile.PhoneNumber;
+
+                await _unitOfWork.TrainerProfile.Update(trainerProfile);
                 _unitOfWork.Save();
                 if (User.IsInRole(SD.Role_Staff))
                 {
                     return RedirectToAction(nameof(TrainerManager));
                 }
                 return RedirectToAction(nameof(Index));
-            }
-               
+            }       
         }
-        
-        #region Api Calls
-
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            if (User.IsInRole(SD.Role_Admin))
-            {
-                var claimsIdentity = (ClaimsIdentity) User.Identity;
-                var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u=> u.Id != claims.Value);
-
-                foreach (var user in userList)
-                {
-                    var usertemp = await _userManager.FindByIdAsync(user.Id);
-                    var roleTemp = await _userManager.GetRolesAsync(usertemp);
-                    user.Role = roleTemp.FirstOrDefault();
-                }
-
-                var userListTemp = userList.Where(u => u.Role != SD.Role_Trainee); 
-                return Json(new {data = userListTemp});
-            }
-            var traineeUserTemp = await _unitOfWork.ApplicationUser.GetAllAsync();
-            foreach (var user in traineeUserTemp)
-            {
-                var usertemp = await _userManager.FindByIdAsync(user.Id);
-                var roleTemp = await _userManager.GetRolesAsync(usertemp);
-                user.Role = roleTemp.FirstOrDefault();
-            }
-
-            var traineeUser = traineeUserTemp.Where(u => u.Role == SD.Role_Trainee || u.Role == SD.Role_Trainer);
-            return Json(new {data = traineeUser});
-        }
-        [HttpGet]
-        public async Task<IActionResult> GetAllTrainer()
-        {
-            var claimsIdentity = (ClaimsIdentity) User.Identity;
-            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u=> u.Id != claims.Value);
-
-            foreach (var user in userList)
-            {
-                var usertemp = await _userManager.FindByIdAsync(user.Id);
-                var roleTemp = await _userManager.GetRolesAsync(usertemp);
-                user.Role = roleTemp.FirstOrDefault();
-            }
-
-            var userListTemp = userList.Where(u => u.Role == SD.Role_Trainer); 
-            return Json(new {data = userListTemp});
-        }
-        [HttpGet]
-        public async Task<IActionResult> GetAllTrainee()
-        {
-            var claimsIdentity = (ClaimsIdentity) User.Identity;
-            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var userList = await _unitOfWork.ApplicationUser.GetAllAsync(u=> u.Id != claims.Value);
-
-            foreach (var user in userList)
-            {
-                var usertemp = await _userManager.FindByIdAsync(user.Id);
-                var roleTemp = await _userManager.GetRolesAsync(usertemp);
-                user.Role = roleTemp.FirstOrDefault();
-            }
-
-            var userListTemp = userList.Where(u => u.Role == SD.Role_Trainee); 
-            return Json(new {data = userListTemp});
-        }
-        [HttpPost]
-        public async Task<IActionResult> LockUnlock([FromBody] string id)
-        {
-            var claimsIdentity = (ClaimsIdentity) User.Identity;
-            var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var userFromDb = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == claims.Value);
-            
-            var objFromDb = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == id);
-            if (objFromDb == null)
-            {
-                return Json(new { success = false, message = "Error while Locking/Unlocking" });
-            }
-            if (userFromDb.Id == objFromDb.Id)
-            {
-                return Json(new { success = false, message = "Error You are currently lock your account" });
-            }
-            if(objFromDb.LockoutEnd!=null && objFromDb.LockoutEnd > DateTime.Now)
-            {
-                //user is currently locked, we will unlock them
-                objFromDb.LockoutEnd = DateTime.Now;
-            }
-            else
-            {
-                objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
-            }
-            _unitOfWork.Save();
-            return Json(new { success = true, message = "Operation Successful." });
-        }
-        [HttpDelete]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var objFromDb = await _unitOfWork.ApplicationUser.GetAsync(id);
-            if (objFromDb == null)
-            {
-                return Json(new {success = false, message = "Error while Deleting"});
-            }
-            await _userManager.DeleteAsync(objFromDb);
-            return Json(new {success = true, message = "Delete successful"});
-        }
-        #endregion
-
     }
 }

@@ -33,9 +33,9 @@ namespace App_Dev.Areas.Authenticated.Controllers
         }
         public async Task<IActionResult> Overview(int? id)
         {
-            var trainerFromDb = await _unitOfWork.CourseAssignToTrainer.GetAllAsync(u => u.CourseId == id, includeProperties:"TrainerProfile");
-            var traineeFromDb = await _unitOfWork.Enroll.GetAllAsync(e => e.CourseId == id, includeProperties:"TraineeProfile");
-            OverviewVM overviewVM = new OverviewVM()
+            var trainerFromDb = await _unitOfWork.CourseTrainer.GetAllAsync(u => u.CourseId == id, includeProperties:"TrainerProfile");
+            var traineeFromDb = await _unitOfWork.Enrollment.GetAllAsync(e => e.CourseId == id, includeProperties:"TraineeProfile");
+            OverviewViewModel overviewVM = new OverviewViewModel()
             {
                 TrainerList = trainerFromDb,
                 TraineeList = traineeFromDb

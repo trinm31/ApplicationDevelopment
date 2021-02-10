@@ -1,15 +1,16 @@
-﻿@model App_Dev.Models.ViewModels.OverviewVM
+﻿@model App_Dev.Models.ViewModels.OverviewViewModel
 
-@if (Model.TrainerList.Count() != 0 )
+@if (Model.TrainerList.Any())
 {
-    <h2>Trainer</h2>
-    <div class="row pb-3 backgroundWhite">
+    <h2 class="text-center">Trainer</h2>
+    <br>
+    <div class="row pb-3 ">
         @foreach (var trainer in Model.TrainerList)
         {
             <div class="col-lg-3 col-md-6">
                 <div class="row p-2">
                     <div class="col-12  p-1">
-                        <div class="card border-primary mb-3" style="max-width: 20rem;">
+                        <div class="card border-primary mb-3 bg-white" style="max-width: 20rem;">
                             <div class="card-header">Trainer: @trainer.TrainerProfile.Name</div>
                             <div class="card-body">
                                 <p class="card-title">Type of trainer: @trainer.TrainerProfile.TypeOfTrainer</p>
@@ -24,12 +25,11 @@
     </div>
 }
 
-@if (Model.TraineeList.Count() != 0)
+@if (Model.TraineeList.Any())
 {
-    <h2>Trainee</h2>
-
-    <div class="p-4 border rounded">
-   
+    <h2 class="text-center">Trainee</h2>
+    <br>
+    <div class="p-4 border rounded bg-white">
         <table id="tblData" class="table table-striped table-bordered" style="width:100%">
             <thead class="thead-dark">
             <tr class="table-info">

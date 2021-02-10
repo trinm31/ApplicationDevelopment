@@ -79,6 +79,7 @@ namespace App_Dev.Areas.Identity.Pages.Account
             public string Education { get; set; }
             [Required]
             public DateTime DateOfBirth { get; set; }
+            [Required]
             public string Role { get; set; }
             public IEnumerable<SelectListItem> RoleList { get; set; }
         }

@@ -1,11 +1,11 @@
-﻿@model App_Dev.Models.ViewModels.CourseVM
+﻿@model App_Dev.Models.ViewModels.CourseViewModel
 
 @{
     var title = "Create Course";
     Layout = "_Layout";
 }
 <form method="post">
-    <div class="row p-3 border">
+    <div class="row p-3 border bg-white">
         @if (Model.Course.Id != 0)
         {
             <input type="hidden" asp-for="Course.Id">

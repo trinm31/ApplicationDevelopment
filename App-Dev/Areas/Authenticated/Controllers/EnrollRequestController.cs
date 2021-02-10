@@ -25,7 +25,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -42,90 +42,27 @@ namespace App_Dev.Areas.Authenticated.Controllers
             }
             var claimsIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            var isExist = await _unitOfWork.Enroll.GetAllAsync(u => u.CourseId == id && u.TraineeId == claims.Value && u.EnrollStatus == SD.Request);
+            var enrolled = await _unitOfWork.Enrollment
+                .GetAllAsync(u => u.CourseId == id && u.TraineeId == claims.Value && u.EnrollStatus == SD.Request);
                 
-            if (isExist.Count() == 0)
+            if (enrolled.Any())
             {
-                Enroll enroll = new Enroll()
+                TempData["Message"] = "Error: Your request already send";
+                return RedirectToAction("AvailableCourse", "Trainee");
+            }
+            else
+            {
+                Enrollment enrollment = new Enrollment()
                 {
                     CourseId = id,
                     TraineeId = claims.Value,
                     Time = DateTime.Now,
                     EnrollStatus = SD.Request
                 };
-                await _unitOfWork.Enroll.AddAsync(enroll);
-                _unitOfWork.Save();
+                await _unitOfWork.Enrollment.AddAsync(enrollment);
+                _unitOfWork.Save();   
             }
-            else
-            {
-                TempData["Message"] = "Error: Your request already send";
-                return RedirectToAction("AvailableCourse", "Trainee");
-            }
-
             return View("ConfirmRequest");
         }
-        #region API CALLS
-        [HttpGet]
-        public async Task<IActionResult> GetEnrollList(string status)
-        {
-            IEnumerable<Enroll> requestList = new List<Enroll>();
-
-            if (User.IsInRole(SD.Role_Staff))
-            {
-                requestList = await _unitOfWork.Enroll.GetAllAsync(includeProperties: "TraineeProfile,Course");
-                switch (status)
-                {
-                    case "inprocess":
-                        requestList = requestList.Where(o => o.EnrollStatus==SD.Request);
-                        break;
-                    case "approve":
-                        requestList = requestList.Where(o =>  o.EnrollStatus==SD.Approve);
-                        break;
-                    case "rejected":
-                        requestList = requestList.Where(o => o.EnrollStatus == SD.Reject);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            return Json(new { data = requestList });
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> Approve([FromBody] string id)
-        {
-            var idInt = Convert.ToInt32(id);
-            if (User.IsInRole(SD.Role_Staff))
-            {
-                Enroll enroll = await _unitOfWork.Enroll.GetFirstOrDefaultAsync(u => u.Id == idInt);
-                if (enroll == null)
-                {
-                    return Json(new { success = false, message = "Can not find request" });
-                }
-                enroll.EnrollStatus = SD.Approve;
-                _unitOfWork.Save();
-                
-            }
-            return Json(new { success = true, message = "Operation Successful." });
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> Reject([FromBody] string id)
-        {
-            var idInt = Convert.ToInt32(id);
-            if (User.IsInRole(SD.Role_Staff))
-            {
-                Enroll enroll = await _unitOfWork.Enroll.GetFirstOrDefaultAsync(u => u.Id == idInt);
-                if (enroll == null)
-                {
-                    return Json(new { success = false, message = "Can not find request" });
-                }
-                enroll.EnrollStatus = SD.Reject;
-                _unitOfWork.Save();
-            }
-            return Json(new { success = true, message = "Operation Successful." });
-        }
-
-        #endregion
     }
 }

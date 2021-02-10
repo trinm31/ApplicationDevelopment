@@ -86,6 +86,9 @@ namespace App_Dev
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{area=Unauthenticated}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                   name: "api",
+                   pattern: "{area=Authenticated}/API/{controller}/{action}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
