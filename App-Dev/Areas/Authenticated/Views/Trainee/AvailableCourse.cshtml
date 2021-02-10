@@ -1,11 +1,11 @@
 ﻿@model List<App_Dev.Models.Course>
 <partial name="_StatusMessage" model="@ViewData["Message"]"/>
-<div class="row pb-3 backgroundWhite">
+<div class="row pb-3">
     @foreach (var course in Model)
     {
         <div class="col-lg-3 col-md-6">
             <div class="row p-2">
-                <div class="col-12  p-1" style=" border: 1px solid #38b875; border-radius: 5px;">
+                <div class="col-12  p-1 bg-white" style=" border: 1px solid #38b875; border-radius: 5px;">
                     <div class="card" style="border:0px;">
                         <div class="card-body">
                             <h5 class="card-title">@course.Name</h5>

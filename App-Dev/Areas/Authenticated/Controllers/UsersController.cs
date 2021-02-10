@@ -103,6 +103,11 @@ namespace App_Dev.Areas.Authenticated.Controllers
                     {
                         return View("ResetPasswordConfirmation");
                     }
+                    else
+                    {
+                        ViewData["Message"] = "Error: Your Password not permitted";
+                        return View(model);
+                    }
 
                     foreach (var error in result.Errors)
                     {
