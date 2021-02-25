@@ -34,7 +34,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
         public async Task<IActionResult> Overview(int? id)
         {
             var trainerFromDb = await _unitOfWork.CourseTrainer.GetAllAsync(u => u.CourseId == id, includeProperties:"TrainerProfile");
-            var traineeFromDb = await _unitOfWork.Enrollment.GetAllAsync(e => e.CourseId == id, includeProperties:"TraineeProfile");
+            var traineeFromDb = await _unitOfWork.Enrollment.GetAllAsync(e => e.CourseId == id && e.EnrollStatus == SD.Approve, includeProperties:"TraineeProfile");
             OverviewViewModel overviewVM = new OverviewViewModel()
             {
                 TrainerList = trainerFromDb,
