@@ -56,6 +56,7 @@ namespace App_Dev.DataAccess.Initalizer
             ApplicationUser userAdmin = _db.ApplicationUsers.Where(u => u.Email == "admin@gmail.com").FirstOrDefault();
 
             _userManager.AddToRoleAsync(userAdmin, SD.Role_Admin).GetAwaiter().GetResult();
+            
             _userManager.CreateAsync(new ApplicationUser
             {
                 UserName = "Staff@gmail.com",

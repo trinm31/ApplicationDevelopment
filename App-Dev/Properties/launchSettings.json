@@ -18,9 +18,9 @@
     "App_Dev": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://0.0.0.0:8000",
+      "applicationUrl": "https://localhost:5002",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }

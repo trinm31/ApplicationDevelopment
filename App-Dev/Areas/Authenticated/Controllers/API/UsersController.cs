@@ -91,7 +91,9 @@ namespace App_Dev.Areas.Authenticated.Controllers.API
             var userListTemp = userList.Where(u => u.Role == SD.Role_Trainee);
             return Json(new { data = userListTemp });
         }
+        
         [HttpPost]
+        // httpget
         public async Task<IActionResult> LockUnlock([FromBody] string id)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -102,10 +104,12 @@ namespace App_Dev.Areas.Authenticated.Controllers.API
             if (applicationUser == null)
             {
                 return Json(new { success = false, message = "Error while Locking/Unlocking" });
+                //return notfound;
             }
             if (claimUser.Id == applicationUser.Id)
             {
                 return Json(new { success = false, message = "Error You are currently lock your account" });
+                //return notfound;
             }
             if (applicationUser.LockoutEnd != null && applicationUser.LockoutEnd > DateTime.Now)
             {
@@ -117,8 +121,11 @@ namespace App_Dev.Areas.Authenticated.Controllers.API
                 applicationUser.LockoutEnd = DateTime.Now.AddYears(1000);
             }
             _unitOfWork.Save();
+            //db.savechange();
             return Json(new { success = true, message = "Operation Successful." });
+            //Return View(nameof(Index))
         }
+        
         [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {

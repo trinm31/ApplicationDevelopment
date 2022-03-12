@@ -87,25 +87,7 @@ namespace App_Dev.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            Input = new InputModel()
-            {
-                RoleList = _roleManager.Roles.Where(u=> u.Name != SD.Role_Trainee).Select(x=> x.Name).Select(i=> new SelectListItem
-                {
-                    Text = i,
-                    Value = i
-                })
-            };
-            if (User.IsInRole(SD.Role_Staff))
-            {
-                Input = new InputModel()
-                {
-                    RoleList = _roleManager.Roles.Where(u=> u.Name == SD.Role_Trainee).Select(x=> x.Name).Select(i=> new SelectListItem
-                    {
-                        Text = i,
-                        Value = i
-                    })
-                };
-            }
+            GetRole();
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -169,47 +151,22 @@ namespace App_Dev.Areas.Identity.Pages.Account
                     if (Input.Role == SD.Role_Trainee)
                     {
                         await _userManager.AddToRoleAsync(traineeProfile, traineeProfile.Role);
+                       
+                        await SendEmail(traineeProfile, returnUrl);
                         
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(traineeProfile);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = traineeProfile.Id, code = code, returnUrl = returnUrl },
-                            protocol: Request.Scheme);
-                    
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
                     }else if (Input.Role == SD.Role_Trainer)
                     {
                         await _userManager.AddToRoleAsync(trainerProfile, trainerProfile.Role);
                         
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(trainerProfile);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = trainerProfile.Id, code = code, returnUrl = returnUrl },
-                            protocol: Request.Scheme);
-                    
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        await SendEmail(trainerProfile, returnUrl);
                     }
                     else
                     {
                         await _userManager.AddToRoleAsync(applicationUser, applicationUser.Role);
-                        
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = applicationUser.Id, code = code, returnUrl = returnUrl },
-                            protocol: Request.Scheme);
-                    
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                        await SendEmail(applicationUser, returnUrl);
                     }
+                    
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
@@ -230,6 +187,29 @@ namespace App_Dev.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+
+            GetRole();
+            
+            // If we got this far, something failed, redisplay form
+            return Page();
+        }
+
+        private async Task SendEmail(ApplicationUser user, string returnUrl)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                protocol: Request.Scheme);
+                    
+            await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+        }
+
+        private void GetRole()
+        {
             Input = new InputModel()
             {
                 RoleList = _roleManager.Roles.Where(u=> u.Name != SD.Role_Trainee).Select(x=> x.Name).Select(i=> new SelectListItem
@@ -249,8 +229,6 @@ namespace App_Dev.Areas.Identity.Pages.Account
                     })
                 };
             }
-            // If we got this far, something failed, redisplay form
-            return Page();
         }
     }
 }

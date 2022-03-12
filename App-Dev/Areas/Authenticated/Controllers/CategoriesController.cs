@@ -1,9 +1,14 @@
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using App_Dev.DataAccess.Repository.IRepository;
 using App_Dev.Models;
+using App_Dev.Models.ViewModels;
 using App_Dev.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App_Dev.Areas.Authenticated.Controllers
@@ -13,10 +18,12 @@ namespace App_Dev.Areas.Authenticated.Controllers
     public class CategoriesController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private IWebHostEnvironment Environment;
 
-        public CategoriesController(IUnitOfWork unitOfWork)
+        public CategoriesController(IUnitOfWork unitOfWork,  IWebHostEnvironment _environment)
         {
             _unitOfWork = unitOfWork;
+            Environment = _environment;
         }
         // GET
         public IActionResult Index()
@@ -64,6 +71,38 @@ namespace App_Dev.Areas.Authenticated.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
+        }
+        
+        public async Task<IActionResult> UploadFile()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadFile(List<IFormFile> files)
+        {
+            string wwwPath = this.Environment.WebRootPath;
+            string contentPath = this.Environment.ContentRootPath;
+
+            string path = Path.Combine(this.Environment.WebRootPath, "uploads");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            List<string> uploadedFiles = new List<string>();
+            foreach (IFormFile postedFile in files)
+            {
+                string fileName = Path.GetFileName(postedFile.FileName);
+                using (FileStream stream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
+                {
+                    postedFile.CopyTo(stream);
+                    uploadedFiles.Add(fileName);
+                    ViewBag.Message += fileName+",";
+                }
+            }
+            return View();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace App_Dev.Areas.Authenticated.Controllers
             _unitOfWork = unitOfWork;
         }
         // GET
-        public IActionResult Index()
+        public IActionResult Index() 
         {
             return View();
         }
